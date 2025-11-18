@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagos del Jugador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="p-8 max-w-5xl mx-auto">
+
+    <!-- VOLVER -->
+    <button onclick="window.location.href='./jugador.html'"
+        class="mb-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded shadow">
+        ← Volver
+    </button>
+
+    <h1 class="text-3xl font-bold text-amber-600 mb-2">Pagos del Jugador</h1>
+
+    <p class="text-gray-600 mb-6">
+        Jugador: <span id="nombreJugador"></span> •
+        RUT: <span id="rutJugador"></span> •
+        Categoría: <span id="categoriaJugador"></span>
+    </p>
+
+    <!-- =============================================
+         PAGAR MENSUALIDAD
+    =============================================== -->
+    <div class="bg-white p-6 shadow rounded border-l-8 border-amber-500 mb-8">
+        <h2 class="text-xl font-bold text-amber-700 mb-2">Pagar Mensualidad</h2>
+        <p class="text-gray-600 mb-4">Seleccione el mes que desea pagar.</p>
+
+        <select id="mesPagar" class="border px-3 py-2 rounded w-64"></select>
+
+        <button onclick="pagarMensualidad()" 
+            class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 ml-4 rounded shadow">
+            Pagar ahora
+        </button>
+
+        <p id="msgPago" class="mt-3 font-semibold"></p>
+    </div>
+
+
+    <!-- =============================================
+         HISTORIAL DE PAGOS
+    =============================================== -->
+    <h2 class="text-2xl font-bold text-gray-700 mb-4">Historial de Pagos</h2>
+
+    <div class="bg-white shadow rounded p-4 overflow-x-auto">
+        <table class="w-full min-w-[600px]">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="p-2">Mes</th>
+                    <th class="p-2">Año</th>
+                    <th class="p-2">Estado</th>
+                    <th class="p-2">Monto</th>
+                    <th class="p-2">Método</th>
+                    <th class="p-2">Fecha Pago</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPagos"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+const idJugador = localStorage.getItem("idJugador");
+document.getElementById("nombreJugador").innerText = localStorage.getItem("nombreJugador");
+document.getElementById("rutJugador").innerText = localStorage.getItem("rutJugador");
+document.getElementById("categoriaJugador").innerText = localStorage.getItem("categoriaJugadorNombre");
+
+
+// =====================================================
+// CARGAR MESES DISPONIBLES PARA PAGO
+// =====================================================
+async function cargarMeses() {
+    const res = await fetch(`http://localhost:3000/api/pagos/meses/${idJugador}`);
+    const data = await res.json();
+
+    const sel = document.getElementById("mesPagar");
+    sel.innerHTML = "";
+
+    // solo meses pendientes
+    data.meses.forEach(m => {
+        if (!m.pagado) {
+            sel.innerHTML += `<option value="${m.mes} ${m.anio}">${m.mes} ${m.anio}</option>`;
+        }
+    });
+
+    if (sel.innerHTML === "") {
+        sel.innerHTML = `<option>No hay meses pendientes</option>`;
+    }
+}
+
+
+// =====================================================
+// REGISTRAR PAGO
+// =====================================================
+async function pagarMensualidad() {
+    const mesCompleto = document.getElementById("mesPagar").value;
+
+    const res = await fetch("http://localhost:3000/api/pagos/registrar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+            jugadorId: idJugador,
+            mes: mesCompleto,
+            monto: 25000,          // ← PUEDES CAMBIARLO A TU VALOR REAL
+            metodoPago: "App",
+            observacion: ""
+        })
+    });
+
+    const data = await res.json();
+
+    const msg = document.getElementById("msgPago");
+    if (data.error) {
+        msg.classList = "text-red-600";
+        msg.innerText = data.error;
+    } else {
+        msg.classList = "text-green-600";
+        msg.innerText = "Pago registrado correctamente.";
+        cargarPagos();
+        cargarMeses();
+    }
+}
+
+
+// =====================================================
+// HISTORIAL COMPLETO (pendientes + pagados)
+// =====================================================
+async function cargarPagos() {
+    // Obtener meses desde creación
+    const mesesRes = await fetch(`http://localhost:3000/api/pagos/meses/${idJugador}`);
+    const mesesData = await mesesRes.json();
+
+    // Obtener pagos reales
+    const pagosRes = await fetch(`http://localhost:3000/api/pagos/jugador/${idJugador}`);
+    const pagosData = await pagosRes.json();
+
+    // 🔥 CORRECCIÓN AQUÍ
+    const pagos = Array.isArray(pagosData) ? pagosData : [];
+
+    const meses = mesesData.meses || [];
+    const tabla = document.getElementById("tablaPagos");
+    tabla.innerHTML = "";
+
+    meses.forEach(m => {
+        const clave = `${m.mes} ${m.anio}`;
+        const pago = pagos.find(p => p.mes === clave);
+
+        tabla.innerHTML += `
+            <tr class="border-b">
+                <td class="p-2">${m.mes}</td>
+                <td class="p-2">${m.anio}</td>
+                <td class="p-2">${pago ? pago.estado : "Pendiente"}</td>
+                <td class="p-2">${pago ? "$" + pago.monto.toLocaleString("es-CL") : "-"}</td>
+                <td class="p-2">${pago ? pago.metodoPago : "-"}</td>
+                <td class="p-2">${pago?.fechaPago ? new Date(pago.fechaPago).toLocaleDateString("es-CL") : "-"}</td>
+            </tr>
+        `;
+    });
+}
+
+// =====================================================
+// INICIALIZAR
+// =====================================================
+cargarMeses();
+cargarPagos();
+</script>
+
+</body>
+</html>

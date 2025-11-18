@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Evento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="p-6 max-w-3xl mx-auto">
+
+    <button onclick="window.location.href='./eventos-jugador.html'" 
+            class="bg-gray-300 px-4 py-2 rounded mb-4 hover:bg-gray-400">
+        ← Volver
+    </button>
+
+    <h1 class="text-3xl font-bold text-green-700 mb-6">
+        Detalle del Evento
+    </h1>
+
+    <!-- Datos del Evento -->
+    <div id="infoEvento" class="bg-white p-5 rounded-xl shadow mb-6"></div>
+
+    <!-- Detalle Asistencia -->
+    <div class="bg-white p-5 rounded-xl shadow">
+        <h2 class="text-xl font-semibold text-green-700 mb-4">
+            Tu participación en este evento
+        </h2>
+
+        <div id="detalleJugador"></div>
+    </div>
+
+</div>
+
+<script>
+const eventoId = localStorage.getItem("eventoJugadorSeleccionado");
+const jugadorId = localStorage.getItem("idJugador");
+
+/* ============================================================
+   Cargar datos del evento
+============================================================ */
+async function cargarEvento() {
+
+    const res = await fetch(`http://localhost:3000/api/evento/${eventoId}`);
+    const data = await res.json();
+
+    const e = data.evento;
+    const asistencia = data.asistencia;
+
+    const fecha = new Date(e.fecha).toLocaleDateString("es-CL");
+
+    document.getElementById("infoEvento").innerHTML = `
+        <p class="text-gray-700"><strong>Fecha:</strong> ${fecha}</p>
+        <p class="text-gray-700"><strong>Tipo:</strong> ${e.tipo}</p>
+        <p class="text-gray-700"><strong>Categoría:</strong> ${e.categoria.nombre}</p>
+        <p class="text-gray-700"><strong>Entrenador:</strong> ${e.entrenador.nombre}</p>
+    `;
+
+    /* === Buscar registro del jugador en la asistencia === */
+    const registro = asistencia.find(a => a.jugador._id === jugadorId);
+
+    if (!registro) {
+        document.getElementById("detalleJugador").innerHTML = `
+            <p class="text-gray-600">No hay datos disponibles para este jugador.</p>
+        `;
+        return;
+    }
+
+    mostrarDetalleJugador(registro);
+}
+
+/* ============================================================
+   Mostrar detalle del jugador en el evento
+============================================================ */
+function mostrarDetalleJugador(reg) {
+
+    let presenteHTML = reg.presente
+        ? `<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">Asistió</span>`
+        : `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">Ausente</span>`;
+
+    document.getElementById("detalleJugador").innerHTML = `
+        <div class="space-y-3">
+
+            <div>
+                <p class="font-semibold">Asistencia:</p>
+                ${presenteHTML}
+            </div>
+
+            ${
+                !reg.presente && reg.motivoInasistencia
+                ? `<div>
+                     <p class="font-semibold">Motivo de Inasistencia:</p>
+                     <p class="text-gray-700">${reg.motivoInasistencia}</p>
+                   </div>`
+                : ""
+            }
+
+            <div>
+                <p class="font-semibold">Observación del entrenador:</p>
+                <p class="text-gray-700">${reg.observacion || "Sin observaciones"}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded-lg">
+
+                <p><strong>Goles:</strong> ${reg.goles}</p>
+                <p><strong>Asistencias:</strong> ${reg.asistenciasGol}</p>
+
+                <p><strong>Pases clave:</strong> ${reg.pasesClave}</p>
+                <p><strong>Recuperaciones:</strong> ${reg.recuperaciones}</p>
+
+                <p><strong>Tiros al arco:</strong> ${reg.tirosArco}</p>
+                <p><strong>Faltas cometidas:</strong> ${reg.faltasCometidas}</p>
+
+                <p><strong>Faltas recibidas:</strong> ${reg.faltasRecibidas}</p>
+
+                <p><strong>Tarjetas amarillas:</strong> 
+                    ${reg.amarilla ? "✔" : "0"}
+                </p>
+
+                <p><strong>Tarjetas rojas:</strong> 
+                    ${reg.roja ? "✔" : "0"}
+                </p>
+
+                <p><strong>Nota de rendimiento:</strong> 
+                    ${reg.rendimiento ?? "No asignada"}
+                </p>
+            </div>
+
+        </div>
+    `;
+}
+
+cargarEvento();
+</script>
+
+</body>
+</html>

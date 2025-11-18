@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Categoría</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- VALIDACIÓN -->
+<script>
+if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
+    window.location.href = "../index.html";
+}
+</script>
+
+<div class="p-6 max-w-5xl mx-auto">
+
+    <button onclick="window.location.href='./jugador.html'" 
+            class="bg-gray-300 px-4 py-2 rounded mb-4 hover:bg-gray-400">
+        ← Volver
+    </button>
+
+    <h1 class="text-3xl font-bold text-green-700 mb-6">
+        Mi Categoría
+    </h1>
+
+    <!-- Información general -->
+    <div id="infoCategoria" class="bg-white p-6 rounded-xl shadow mb-8"></div>
+
+    <!-- Jugadores -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold text-green-700 mb-4">
+            Jugadores de la categoría
+        </h2>
+
+        <table class="w-full text-left">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-2">Nombre</th>
+                    <th class="p-2">RUT</th>
+                </tr>
+            </thead>
+            <tbody id="listaJugadores"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+const categoriaId = localStorage.getItem("categoriaJugador");
+const nombreJugador = localStorage.getItem("nombreJugador");
+const categoriaNombre = localStorage.getItem("categoriaNombreJugador");
+
+/* ============================================================
+   1. Cargar datos generales de la categoría
+============================================================ */
+async function cargarCategoria() {
+
+    const res = await fetch(`http://localhost:3000/api/categoria/${categoriaId}`);
+    const data = await res.json();
+
+    document.getElementById("infoCategoria").innerHTML = `
+        <p class="text-gray-700"><strong>Categoría:</strong> ${data.nombre}</p>
+        <p class="text-gray-700"><strong>Entrenador:</strong> ${data.entrenador?.nombre || "Sin entrenador asignado"}</p>
+        <p class="text-gray-700"><strong>Edad mínima:</strong> ${data.edadMin}</p>
+        <p class="text-gray-700"><strong>Edad máxima:</strong> ${data.edadMax}</p>
+    `;
+}
+
+/* ============================================================
+   2. Cargar jugadores de la categoría
+============================================================ */
+async function cargarJugadores() {
+
+    const res = await fetch(`http://localhost:3000/api/jugador/categoria/${categoriaId}`);
+    const jugadores = await res.json();
+
+    const tbody = document.getElementById("listaJugadores");
+    tbody.innerHTML = "";
+
+    jugadores.forEach(j => {
+
+        tbody.innerHTML += `
+            <tr class="border-b">
+                <td class="p-2">${j.nombre}</td>
+                <td class="p-2">${j.rut}</td>
+            </tr>
+        `;
+    });
+}
+
+cargarCategoria();
+cargarJugadores();
+</script>
+
+</body>
+</html>
