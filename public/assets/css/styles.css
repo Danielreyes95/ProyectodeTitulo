@@ -1,18 +1,18 @@
 /* ============================================================
-   SISTEMA DE ESTILOS BASE – Compatible con Tailwind utilities
+   SISTEMA DE ESTILOS BASE – Optimizado para Tailwind
    ============================================================ */
 
-/* Reset general */
+/* Reset general (compatible con Tailwind) */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Variables de colores */
+/* Variables globales */
 :root {
   --primary: #2563eb;        /* Azul primario */
-  --primary-dark: #1d4ed8;   
+  --primary-dark: #1d4ed8;
   --secondary: #10b981;      /* Verde */
   --danger: #ef4444;         /* Rojo */
   --gray-100: #f3f4f6;
@@ -32,15 +32,15 @@ body {
 
 /* ============================================================
    CONTENEDORES GENERALES
-   ============================================================ */
-.container {
+============================================================ */
+.container-custom {
   width: 100%;
   max-width: 420px;
   margin: 50px auto;
   padding: 20px;
 }
 
-/* Tarjetas */
+/* Tarjetas base */
 .card {
   background: var(--white);
   padding: 25px;
@@ -56,15 +56,17 @@ h1, h2, h3 {
 }
 
 /* ============================================================
-   INPUTS Y FORMULARIOS
-   ============================================================ */
+   FORMULARIOS (inputs + select)
+============================================================ */
+
+/* Estilos base sin interferir con clases Tailwind */
 input, select {
   width: 100%;
   padding: 12px;
-  margin: 8px 0 15px;
   border: 1px solid var(--gray-200);
   border-radius: 8px;
   font-size: 15px;
+  background: white;
 }
 
 input:focus, select:focus {
@@ -72,9 +74,14 @@ input:focus, select:focus {
   outline: none;
 }
 
+/* Espaciado entre campos (no margina todo) */
+.form-group {
+  margin-bottom: 15px;
+}
+
 /* ============================================================
-   BOTONES
-   ============================================================ */
+   BOTONES (compatibles con Tailwind)
+============================================================ */
 
 .btn {
   width: 100%;
@@ -87,7 +94,6 @@ input:focus, select:focus {
   transition: 0.2s;
 }
 
-/* Botón primario */
 .btn-primary {
   background: var(--primary);
   color: var(--white);
@@ -97,7 +103,6 @@ input:focus, select:focus {
   background: var(--primary-dark);
 }
 
-/* Botón verde */
 .btn-success {
   background: var(--secondary);
   color: white;
@@ -109,42 +114,9 @@ input:focus, select:focus {
 }
 
 /* ============================================================
-   UTILIDADES (como Tailwind)
-   ============================================================ */
+   ALERTAS
+============================================================ */
 
-.text-center {
-  text-align: center;
-}
-
-.mt-1 { margin-top: 4px; }
-.mt-2 { margin-top: 8px; }
-.mt-3 { margin-top: 12px; }
-.mt-4 { margin-top: 16px; }
-.mt-5 { margin-top: 20px; }
-
-.mb-1 { margin-bottom: 4px; }
-.mb-2 { margin-bottom: 8px; }
-.mb-3 { margin-bottom: 12px; }
-.mb-4 { margin-bottom: 16px; }
-.mb-5 { margin-bottom: 20px; }
-
-.flex {
-  display: flex;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.items-center {
-  align-items: center;
-}
-
-/* Alertas */
 .alert {
   padding: 12px;
   margin: 10px 0;
@@ -162,13 +134,9 @@ input:focus, select:focus {
   color: #065f46;
 }
 
-.hidden {
-  display: none;
-}
-
-/* ============================
+/* ============================================================
    TOAST NOTIFICATIONS
-   ============================ */
+============================================================ */
 
 .toast {
   padding: 12px 16px;
@@ -183,11 +151,11 @@ input:focus, select:focus {
 }
 
 .toast-success {
-  background-color: #16a34a; /* verde */
+  background-color: #16a34a;
 }
 
 .toast-error {
-  background-color: #dc2626; /* rojo */
+  background-color: #dc2626;
 }
 
 @keyframes slideIn {
@@ -204,25 +172,37 @@ input:focus, select:focus {
   }
 }
 
-/* Tarjetas de estadísticas de Mi Categoría */
+/* ============================================================
+   TARJETAS DE ESTADÍSTICAS
+============================================================ */
+
 .stat-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;         /* CENTRA PERFECTO EL TEXTO */
-    text-align: center;          /* Ajusta la alineación */
-    padding: 12px;
-    border-radius: 8px;
-    min-height: 70px;            /* Todas iguales de altura */
-    font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  min-height: 70px;
+  font-size: 1.1rem;
 }
 
 .stat-title {
-    font-weight: 600;
-    margin-bottom: 4px;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .stat-value {
-    font-size: 1.3rem;
-    font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* ============================================================
+   UTILIDADES PERSONALIZADAS
+   (solo lo que NO trae Tailwind)
+============================================================ */
+
+.hidden {
+  display: none !important;
 }

@@ -38,9 +38,7 @@
 
 <body class="bg-gray-100">
 
-<!-- ================================
-     VALIDACIÓN
-================================ -->
+<!-- VALIDACIÓN -->
 <script>
 if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
     window.location.href = "../index.html";
@@ -48,9 +46,9 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
 </script>
 
 <!-- ================================
-       CONTENIDO PRINCIPAL
+     CONTENIDO PRINCIPAL (sin sidebar)
 ================================ -->
-<main class="p-6 sm:p-10 md:ml-60 min-h-screen relative flex flex-col">
+<main class="w-full p-6 sm:p-10 min-h-screen relative">
 
     <!-- TÍTULO -->
     <h1 class="text-2xl sm:text-3xl font-bold text-green-700">Bienvenido, Entrenador</h1>
@@ -60,31 +58,31 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 z-10">
 
         <a href="./miCategoria.html"
-            class="card-dashboard border-l-8 border-green-600">
+           class="card-dashboard border-l-8 border-green-600">
             <p class="card-title text-green-700">Mi Categoría</p>
             <p class="card-sub">Jugadores asignados</p>
         </a>
 
         <a href="./asistencia.html"
-            class="card-dashboard border-l-8 border-blue-600">
+           class="card-dashboard border-l-8 border-blue-600">
             <p class="card-title text-blue-700">Asistencia</p>
             <p class="card-sub">Registro y control</p>
         </a>
 
         <a href="./observaciones.html"
-            class="card-dashboard border-l-8 border-amber-600">
+           class="card-dashboard border-l-8 border-amber-600">
             <p class="card-title text-amber-700">Observaciones</p>
             <p class="card-sub">Notas individuales</p>
         </a>
 
         <a href="./estadisticas.html"
-            class="card-dashboard border-l-8 border-purple-600">
+           class="card-dashboard border-l-8 border-purple-600">
             <p class="card-title text-purple-700">Rendimiento</p>
             <p class="card-sub">Goles · Asistencias · Tarjetas</p>
         </a>
 
         <a href="./avisos-entrenador.html"
-            class="card-dashboard border-l-8 border-red-600">
+           class="card-dashboard border-l-8 border-red-600">
             <p class="card-title text-red-700">Enviar Avisos</p>
             <p class="card-sub">A apoderados de tu categoría</p>
         </a>

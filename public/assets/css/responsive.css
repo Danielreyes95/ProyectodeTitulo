@@ -1,146 +1,42 @@
 /* ============================================================
    RESPONSIVE GLOBAL PARA TODAS LAS VISTAS
    Compatible con Tailwind + styles.css
+   Sidebar opcional (solo aplica si existe #sidebar)
 ============================================================ */
 
-/* ------------------------------
-   Sidebar responsive
------------------------------- */
+/* -----------------------------------------------------------
+   SIDEBAR — MÓVIL (max 768px)
+----------------------------------------------------------- */
 @media (max-width: 768px) {
 
   /* Sidebar oculto por defecto */
   #sidebar {
     position: fixed;
-    left: -260px;
     top: 0;
-    height: 100vh;
+    left: -240px;     /* Oculto */
     width: 240px !important;
+    height: 100vh;
+    background-color: #166534;
     transition: left 0.3s ease-in-out;
-    z-index: 50;
+    z-index: 100;
   }
 
-  /* Sidebar visible cuando se activa */
+  /* Sidebar visible al activar */
   #sidebar.active {
     left: 0;
   }
 
-  /* Empujar contenido solo en PC */
+  /* Contenido sin empujar */
   main {
     margin-left: 0 !important;
   }
 }
 
-/* ------------------------------
-   Contenido con sidebar en PC
------------------------------- */
-@media (min-width: 768px) {
-  main {
-    margin-left: 240px;
-  }
-}
-
-/* ------------------------------
-   Tablas responsive
------------------------------- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.responsive-table {
-  overflow-x: auto;
-  width: 100%;
-}
-
-table th, table td {
-  white-space: nowrap;
-}
-
-/* ------------------------------
-   Ajustes de textos en móvil
------------------------------- */
-@media (max-width: 480px) {
-
-  h1 {
-    font-size: 1.5rem !important;
-  }
-
-  h2 {
-    font-size: 1.25rem !important;
-  }
-
-  .card {
-    padding: 15px !important;
-  }
-
-  input, select {
-    padding: 10px !important;
-    font-size: 14px !important;
-  }
-}
-
-/* ------------------------------
-   Botón de menú (hamburguesa)
------------------------------- */
-#btnMenu {
-  z-index: 200;
-}
-
-/* ------------------------------
-   Ocultar textos largos si no caben
------------------------------- */
-.truncate-mobile {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-
-/* ------------------------------
-   Fix para tablas de eventos
------------------------------- */
-.min-w-600 {
-  min-width: 600px;
-}
-/* ============================================================
-   RESPONSIVE GLOBAL PARA TODAS LAS VISTAS
-   Compatible con Tailwind + styles.css
-   Ajustado para sidebar de 240px exactos
-============================================================ */
-
-/* ------------------------------
-   Sidebar en móvil
------------------------------- */
-@media (max-width: 768px) {
-
-  /* Sidebar oculto por defecto */
-  #sidebar {
-    position: fixed;
-    top: 0;
-    left: -240px; /* Sidebar escondido */
-    width: 240px !important;
-    height: 100vh;
-    background-color: #166534; /* verde del director */
-    transition: left 0.3s ease-in-out;
-    z-index: 100;
-  }
-
-  /* Sidebar visible cuando está activo */
-  #sidebar.active {
-    left: 0;
-  }
-
-  main {
-    margin-left: 0 !important; /* contenido sin margen en mobile */
-  }
-}
-
-/* ------------------------------
-   Sidebar en PC (desktop)
------------------------------- */
+/* -----------------------------------------------------------
+   SIDEBAR — DESKTOP (solo si existe el #sidebar)
+----------------------------------------------------------- */
 @media (min-width: 768px) {
 
-  /* Sidebar fijo */
   #sidebar {
     position: fixed;
     top: 0;
@@ -150,15 +46,15 @@ table th, table td {
     z-index: 50;
   }
 
-  /* Contenido principal alineado */
-  main {
+  /* Solo aplicar margen SI existe sidebar */
+  body:has(#sidebar) main {
     margin-left: 240px !important;
   }
 }
 
-/* ------------------------------
-   Tablas responsive
------------------------------- */
+/* -----------------------------------------------------------
+   TABLAS RESPONSIVE
+----------------------------------------------------------- */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -173,9 +69,9 @@ table th, table td {
   white-space: nowrap;
 }
 
-/* ------------------------------
-   Ajustes de textos en móvil
------------------------------- */
+/* -----------------------------------------------------------
+   TEXTOS EN MÓVIL
+----------------------------------------------------------- */
 @media (max-width: 480px) {
 
   h1 {
@@ -196,25 +92,25 @@ table th, table td {
   }
 }
 
-/* ------------------------------
-   Botón de menú hamburguesa
------------------------------- */
+/* -----------------------------------------------------------
+   BOTÓN HAMBUGUESA
+----------------------------------------------------------- */
 #btnMenu {
   z-index: 200;
 }
 
-/* ------------------------------
-   Truncado de textos largos
------------------------------- */
+/* -----------------------------------------------------------
+   TRUNCAR TEXTOS LARGOS
+----------------------------------------------------------- */
 .truncate-mobile {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* ------------------------------
-   Fix para tablas de eventos
------------------------------- */
+/* -----------------------------------------------------------
+   TABLAS ANCHAS DE EVENTOS
+----------------------------------------------------------- */
 .min-w-600 {
   min-width: 600px;
 }

@@ -151,9 +151,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const edadProm = (edades.reduce((a, b) => a + b, 0) / edades.length).toFixed(1);
 
-        document.getElementById("activos").textContent = activos;
-        document.getElementById("inactivos").textContent = inactivos;
-        document.getElementById("edadPromedio").textContent = edadProm;
+        document.getElementById("activosCount").textContent = activos;
+        document.getElementById("inactivosCount").textContent = inactivos;
+        document.getElementById("edadProm").textContent = edadProm;
+        document.getElementById("asistenciaProm").textContent = asistenciaProm + "%";
 
         // ==========================
         // ASISTENCIA PROMEDIO
