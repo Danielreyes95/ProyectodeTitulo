@@ -3,13 +3,13 @@ async function loadSidebar() {
     let sidebarFile = "";
 
     if (rol === "director") 
-        sidebarFile = "../assets/sidebar/sidebar-director.html";
+        sidebarFile = "../assets/css/sidebar-director.html";
 
     else if (rol === "entrenador") 
-        sidebarFile = "../assets/sidebar/sidebar-entrenador.html";
+        sidebarFile = "../assets/css/sidebar-entrenador.html";
 
     else if (rol === "apoderado") 
-        sidebarFile = "../assets/sidebar/sidebar-jugador.html";
+        sidebarFile = "../assets/css/sidebar-jugador.html";
 
     else return;
 
