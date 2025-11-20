@@ -203,3 +203,26 @@ input:focus, select:focus {
     transform: translateX(20px);
   }
 }
+
+/* Tarjetas de estadísticas de Mi Categoría */
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;         /* CENTRA PERFECTO EL TEXTO */
+    text-align: center;          /* Ajusta la alineación */
+    padding: 12px;
+    border-radius: 8px;
+    min-height: 70px;            /* Todas iguales de altura */
+    font-size: 1.1rem;
+}
+
+.stat-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
