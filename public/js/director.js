@@ -46,10 +46,10 @@ function animarNumero(elemento, valorFinal) {
 async function cargarEstadisticas() {
     try {
         const [jRes, eRes, pRes, aRes] = await Promise.all([
-            fetch("http://localhost:3000/api/jugadores/count"),
-            fetch("http://localhost:3000/api/entrenadores/count"),
-            fetch("http://localhost:3000/api/pagos/aldia"),
-            fetch("http://localhost:3000/api/asistencia/semana")
+            fetch(`${BASE_URL}/api/jugadores/count`),
+            fetch(`${BASE_URL}/api/entrenadores/count`),
+            fetch(`${BASE_URL}/api/pagos/aldia`),
+            fetch(`${BASE_URL}/api/asistencia/semana`)
         ]);
 
         const jugadores = await jRes.json();

@@ -16,7 +16,7 @@ document.getElementById("formEventoEntrenador").addEventListener("submit", async
     lugar: document.getElementById("lugar").value
   };
 
-  const res = await fetch("http://localhost:3000/api/notificaciones/evento", {
+  const res = await fetch(`${BASE_URL}/api/notificaciones/evento`,{
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -27,7 +27,7 @@ async function registrarApoderado() {
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/auth/registro-apoderado", {
+        const res = await fetch(`${BASE_URL}/api/auth/registro-apoderado`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data)

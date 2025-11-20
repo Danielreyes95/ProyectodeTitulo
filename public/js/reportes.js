@@ -1,7 +1,7 @@
 // =====================================================
 // CONFIGURACIÓN GENERAL
 // =====================================================
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = BASE_URL + "/api";
 
 let cacheCategorias = null;
 

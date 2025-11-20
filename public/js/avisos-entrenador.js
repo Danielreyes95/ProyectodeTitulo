@@ -1,7 +1,7 @@
 /* ============================================================
    CONFIG
 ============================================================ */
-const API = "http://localhost:3000/api";
+const API = `${BASE_URL}/api`;
 
 const entrenadorId = localStorage.getItem("idEntrenador");
 const categoriaId = localStorage.getItem("categoria");

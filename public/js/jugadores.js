@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tabla = document.getElementById("tablaJugadores");
 
   try {
-    const res = await fetch("http://localhost:3000/api/jugador/listar", {
+    const res = await fetch(`${BASE_URL}/api/jugador/listar`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
