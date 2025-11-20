@@ -1,7 +1,7 @@
 /* ============================================================
    CONFIG
 ============================================================ */
-const API = "http://localhost:3000/api";
+const API = `${BASE_URL}/api`;
 
 const entrenadorId = localStorage.getItem("idEntrenador");
 const categoriaId = localStorage.getItem("categoria");
@@ -41,7 +41,7 @@ async function cargarJugadoresDeCategoria() {
     select.innerHTML = `<option value="">Seleccione un jugador...</option>`;
 
     try {
-        const res = await fetch(`${API}/jugadores/listar`);
+        const res = await fetch(`${BASE_URL}/api/jugadores/listar`);
         const jugadores = await res.json();
 
         const filtrados = jugadores.filter(j => j.categoria?._id === categoriaId);
@@ -63,7 +63,7 @@ async function cargarJugadoresDeCategoria() {
 ============================================================ */
 async function cargarAvisos() {
     try {
-        const res = await fetch(`${API}/avisos`);
+        const res = await fetch(`${BASE_URL}/api/avisos`);
         let avisos = await res.json();
 
         // Filtrar solo LOS avisos creados por este entrenador
@@ -159,7 +159,7 @@ async function guardarAviso() {
         destinatarioId
     };
 
-    const res = await fetch(`${API}/avisos`, {
+    const res = await fetch(`${BASE_URL}/api/avisos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -181,7 +181,7 @@ async function guardarAviso() {
 async function eliminarAviso(id) {
     if (!confirm("¿Seguro que deseas eliminar este aviso?")) return;
 
-    const res = await fetch(`${API}/avisos/${id}`, { method: "DELETE" });
+    const res = await fetch(`${BASE_URL}/api/avisos/${id}`, { method: "DELETE" });
     const data = await res.json();
 
     if (data.error) return alert("❌ " + data.error);

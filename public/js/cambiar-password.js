@@ -35,7 +35,7 @@ async function cambiarPassword() {
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/auth/cambiar-password", {
+        const res = await fetch(`${BASE_URL}/api/auth/cambiar-password`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

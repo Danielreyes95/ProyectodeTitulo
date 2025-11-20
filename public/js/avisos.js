@@ -16,7 +16,7 @@ function logout() {
 ============================================================ */
 async function cargarCategorias() {
     try {
-        const res = await fetch("http://localhost:3000/api/categorias");
+        const res = await fetch(`${BASE_URL}/api/categorias`);
         const categorias = await res.json();
 
         const filtro = document.getElementById("filtroCategoria");
@@ -39,7 +39,7 @@ async function cargarEntrenadoresEspecifico() {
     const select = document.getElementById("avisoEntrenadorId");
     select.innerHTML = `<option value="">Seleccione un entrenador…</option>`;
 
-    const res = await fetch("http://localhost:3000/api/entrenadores/listar");
+    const res = await fetch(`${BASE_URL}/api/entrenadores/listar`);
     const lista = await res.json();
 
     lista.forEach(e => {
@@ -54,7 +54,7 @@ async function cargarJugadoresApoderado() {
     const select = document.getElementById("avisoJugadorId");
     select.innerHTML = `<option value="">Seleccione un jugador…</option>`;
 
-    const res = await fetch("http://localhost:3000/api/jugadores/listar");
+    const res = await fetch(`${BASE_URL}/api/jugadores/listar`);
     const lista = await res.json();
 
     lista.forEach(j => {
@@ -104,7 +104,7 @@ async function cargarAvisos() {
         if (estado) params.append("estado", estado);
         if (buscar) params.append("q", buscar);
 
-        const res = await fetch(`http://localhost:3000/api/avisos?${params.toString()}`);
+        const res = await fetch(`${BASE_URL}/api/avisos?${params.toString()}`);
         let avisos = await res.json();
 
         if (destinatarioFiltro) {
@@ -208,7 +208,7 @@ async function abrirModalAviso(id = null) {
     } else {
         tituloModal.innerText = "Editar aviso";
 
-        const res = await fetch("http://localhost:3000/api/avisos");
+        const res = await fetch(`${BASE_URL}/api/avisos`);
         const avisos = await res.json();
         const aviso = avisos.find(a => a._id === id);
         if (!aviso) return alert("Aviso no encontrado.");
@@ -276,7 +276,7 @@ async function guardarAviso() {
     if (!payload.titulo || !payload.contenido)
         return alert("Debes ingresar título y contenido.");
 
-    let url = "http://localhost:3000/api/avisos";
+    let url =  `${BASE_URL}/api/avisos`;
     let method = "POST";
 
     if (id) {
@@ -306,7 +306,7 @@ async function guardarAviso() {
 async function eliminarAviso(id) {
     if (!confirm("¿Seguro que deseas eliminar este aviso?")) return;
 
-    const res = await fetch(`http://localhost:3000/api/avisos/${id}`, { method: "DELETE" });
+    const res = await fetch(`${BASE_URL}/api/avisos/${id}`, { method: "DELETE" });
     const data = await res.json();
 
     if (data.error) return alert("❌ " + data.error);
@@ -319,7 +319,7 @@ async function eliminarAviso(id) {
    SOCKET.IO
 ============================================================ */
 if (typeof io !== "undefined") {
-    const socket = io();
+    const socket = io(BASE_URL);
     socket.on("nuevo-aviso", aviso => {
         console.log("📩 Aviso recibido en tiempo real:", aviso);
         cargarAvisos();

@@ -17,7 +17,7 @@ function logout() {
    CARGAR CATEGORÍAS PARA FILTRO
 ===================================================== */
 async function cargarCategoriasFiltro() {
-    const res = await fetch("http://localhost:3000/api/categorias");
+    const res = await fetch(`${BASE_URL}/api/categorias`); 
     const categorias = await res.json();
 
     const select = document.getElementById("filtroCategoria");
@@ -57,7 +57,7 @@ async function cargarPagos() {
     if (!mes) return;
 
     const res = await fetch(
-        `http://localhost:3000/api/pagos/resumen?mes=${mes}&categoriaId=${categoria}`
+        `${BASE_URL}/api/pagos/resumen?mes=${mes}&categoriaId=${categoria}`
     );
 
     const data = await res.json();
@@ -183,7 +183,7 @@ async function confirmarPago() {
     if (!monto || isNaN(monto) || monto <= 0) return alert("Debe ingresar un monto válido.");
     if (!metodo) return alert("Debe seleccionar un método.");
 
-    const res = await fetch("http://localhost:3000/api/pagos/registrar", {
+    const res = await fetch(`${BASE_URL}/api/pagos/registrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -217,7 +217,7 @@ async function abrirModalEditarPago(pagoId, jugadorId, nombre, mes) {
     const partes = mes.split("-");
     document.getElementById("editarMesTexto").innerText = `${partes[1]}-${partes[0]}`;
 
-    const res = await fetch(`http://localhost:3000/api/pagos/jugador/${jugadorSeleccionado}`);
+    const res = await fetch(`${BASE_URL}/api/pagos/jugador/${jugadorSeleccionado}`);
     const data = await res.json();
 
     const pago = data.pagos.find(p => p._id === pagoId);
@@ -254,7 +254,7 @@ async function confirmarEdicionPago() {
     if (Object.keys(payload).length === 0)
         return alert("No hay cambios para guardar.");
 
-    const res = await fetch(`http://localhost:3000/api/pagos/editar/${pagoId}`, {
+    const res = await fetch(`${BASE_URL}/api/pagos/editar/${pagoId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -276,7 +276,7 @@ async function eliminarPago(pagoId) {
 
     if (!confirm("¿Eliminar pago definitivamente?")) return;
 
-    const res = await fetch(`http://localhost:3000/api/pagos/eliminar/${pagoId}`, {
+    const res = await fetch(`${BASE_URL}/api/pagos/eliminar/${pagoId}`, {
         method: "DELETE"
     });
 
@@ -310,10 +310,10 @@ function cerrarModalHistorial() {
 
 async function cargarAniosHistorial(idJugador) {
 
-    const jugadorRes = await fetch(`http://localhost:3000/api/jugadores/${idJugador}`);
+    const jugadorRes = await fetch(`${BASE_URL}/api/jugadores/${idJugador}`);
     const jugador = await jugadorRes.json();
 
-    const pagosRes = await fetch(`http://localhost:3000/api/pagos/jugador/${idJugador}`);
+    const pagosRes = await fetch(`${BASE_URL}/api/pagos/jugador/${idJugador}`);
     const pagosData = await pagosRes.json();
 
     const fecha = jugador.createdAt ? new Date(jugador.createdAt) : new Date();
@@ -339,7 +339,7 @@ async function cargarAniosHistorial(idJugador) {
 
 async function cargarHistorial(anio) {
 
-    const res = await fetch(`http://localhost:3000/api/pagos/jugador/${jugadorSeleccionado}`);
+    const res = await fetch(`${BASE_URL}/api/pagos/jugador/${jugadorSeleccionado}`);
     const data = await res.json();
 
     const meses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
