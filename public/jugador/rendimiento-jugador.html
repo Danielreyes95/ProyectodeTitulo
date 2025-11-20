@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Rendimiento del Jugador</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 
 <body class="bg-gray-100">
@@ -16,102 +22,109 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
 }
 </script>
 
+<!-- CONFIG -->
 <script src="../js/config.js"></script>
 
-<div class="p-8">
+<!-- SIDEBAR AUTO -->
+<div id="sidebar-container"></div>
+<script src="../js/loadSidebar.js"></script>
 
-    <!-- BOTÓN VOLVER -->
+<!-- ============================================================
+     CONTENIDO PRINCIPAL
+============================================================ -->
+<main class="p-4 sm:p-8 md:ml-60 max-w-6xl mx-auto">
+
+    <!-- VOLVER -->
     <button onclick="window.location.href='./jugador.html'"
-            class="mb-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded shadow">
+        class="mb-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded shadow">
         ← Volver
     </button>
 
-    <h1 class="text-3xl font-bold text-green-700 mb-2">Rendimiento del Jugador</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold text-green-700 mb-2">
+        Rendimiento del Jugador
+    </h1>
 
-    <p class="text-gray-600 mb-6">
-        Jugador: <span id="nombreJugador"></span> • 
+    <p class="text-sm sm:text-base text-gray-600 mb-6">
+        Jugador: <span id="nombreJugador"></span> •
         Categoría: <span id="categoriaJugador"></span>
     </p>
 
     <!-- BOTONES PRINCIPALES -->
-    <div class="flex gap-4 mb-6">
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
         <button id="btnCategoria" onclick="mostrarCategoria()"
-            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded shadow font-semibold">
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded shadow font-semibold w-full sm:w-auto">
             Rendimiento de la categoría
         </button>
 
         <button id="btnIndividual" onclick="mostrarIndividual()"
-            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded shadow font-semibold">
+            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded shadow font-semibold w-full sm:w-auto">
             Mi Estadística
         </button>
     </div>
 
-    <!-- =======================
-         SECCIÓN CATEGORÍA
-    ======================== -->
+    <!-- ============================================================
+         SECCIÓN: RENDIMIENTO DE LA CATEGORÍA
+    ============================================================ -->
     <div id="seccionCategoria" class="hidden">
 
         <h2 class="text-2xl font-bold text-green-700 mb-4">Rendimiento de la Categoría</h2>
 
-        <p class="text-gray-600 mb-4">Resumen general de todos los jugadores de la categoría.</p>
+        <p class="text-gray-600 mb-4">
+            Resumen general de todos los jugadores.
+        </p>
 
-        <div id="rendimientoCategoria" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        <div id="rendimientoCategoria"
+             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
     </div>
 
-    <!-- =======================
-         SECCIÓN INDIVIDUAL
-    ======================== -->
-    <div id="seccionIndividual" class="">
+    <!-- ============================================================
+         SECCIÓN: ESTADÍSTICA PERSONAL
+    ============================================================ -->
+    <div id="seccionIndividual">
 
         <h2 class="text-2xl font-bold text-purple-700 mb-4">Mi Estadística Personal</h2>
 
         <!-- TARJETAS RESUMEN -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-5 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
 
-            <!-- Asistencia -->
             <div class="p-4 bg-white rounded shadow border-l-8 border-green-600">
                 <p class="text-2xl font-bold text-green-700" id="asistenciaTotal">0%</p>
-                <p class="text-gray-600 text-sm">Asistencia total</p>
+                <p class="text-gray-600 text-sm">Asistencia</p>
             </div>
 
-            <!-- Goles -->
             <div class="p-4 bg-white rounded shadow border-l-8 border-blue-600">
                 <p class="text-2xl font-bold text-blue-700" id="golesTotal">0</p>
-                <p class="text-gray-600 text-sm">Goles totales</p>
+                <p class="text-gray-600 text-sm">Goles</p>
             </div>
 
-            <!-- Asistencias -->
             <div class="p-4 bg-white rounded shadow border-l-8 border-amber-600">
                 <p class="text-2xl font-bold text-amber-700" id="asistenciasGol">0</p>
                 <p class="text-gray-600 text-sm">Asistencias</p>
             </div>
 
-            <!-- Amarillas -->
             <div class="p-4 bg-white rounded shadow border-l-8 border-purple-600">
                 <p class="text-2xl font-bold text-purple-700" id="amarillas">0</p>
-                <p class="text-gray-600 text-sm">Tarjetas Amarillas</p>
+                <p class="text-gray-600 text-sm">Amarillas</p>
             </div>
 
-            <!-- Rojas -->
             <div class="p-4 bg-white rounded shadow border-l-8 border-red-600">
                 <p class="text-2xl font-bold text-red-700" id="rojas">0</p>
-                <p class="text-gray-600 text-sm">Tarjetas Rojas</p>
+                <p class="text-gray-600 text-sm">Rojas</p>
             </div>
 
-            <!-- Faltas -->
             <div class="p-4 bg-white rounded shadow border-l-8 border-gray-600">
                 <p class="text-2xl font-bold text-gray-700" id="faltas">0</p>
-                <p class="text-gray-600 text-sm">Faltas cometidas</p>
+                <p class="text-gray-600 text-sm">Faltas</p>
             </div>
         </div>
 
         <!-- TABLA DETALLE -->
-        <h3 class="text-xl font-bold text-gray-700 mb-3">Detalle de tus participaciones</h3>
+        <h3 class="text-xl font-bold text-gray-700 mb-3">Detalle de participación</h3>
 
-        <div class="bg-white shadow rounded p-3 overflow-x-auto">
-            <table class="w-full min-w-[600px]">
-                <thead>
-                    <tr class="bg-gray-200">
+        <div class="bg-white shadow rounded p-3 responsive-table">
+            <table class="w-full min-w-[700px] text-sm">
+                <thead class="bg-gray-200">
+                    <tr>
                         <th class="p-2">Fecha</th>
                         <th class="p-2">Evento</th>
                         <th class="p-2">Asistencia</th>
@@ -125,51 +138,48 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
         </div>
     </div>
 
-</div>
+</main>
 
-<!-- =======================
-     SCRIPTS
-======================= -->
+<!-- ============================================================
+     SCRIPTS LÓGICA
+============================================================ -->
 <script>
 const idJugador = localStorage.getItem("idJugador");
-const nombreJugador = localStorage.getItem("nombreJugador");
-const categoriaJugador = localStorage.getItem("categoriaJugador");
-
-document.getElementById("nombreJugador").innerText = nombreJugador;
-document.getElementById("categoriaJugador").innerText = localStorage.getItem("categoriaJugadorNombre") 
-    || "Sin nombre";
+document.getElementById("nombreJugador").innerText = localStorage.getItem("nombreJugador");
+document.getElementById("categoriaJugador").innerText = localStorage.getItem("categoriaNombreJugador");
 
 
-/* =======================
-   MOSTRAR SECCIONES
-======================= */
+/* =========================
+   CAMBIO DE SECCIONES
+========================= */
 function mostrarCategoria() {
     document.getElementById("seccionCategoria").classList.remove("hidden");
     document.getElementById("seccionIndividual").classList.add("hidden");
-    cargarRendimientoCategoria();
 
-    // Botones activos
     document.getElementById("btnCategoria").classList.add("scale-105");
     document.getElementById("btnIndividual").classList.remove("scale-105");
+
+    cargarRendimientoCategoria();
 }
 
 function mostrarIndividual() {
-    document.getElementById("seccionIndividual").classList.remove("hidden");
     document.getElementById("seccionCategoria").classList.add("hidden");
-    cargarEstadisticasJugador();
+    document.getElementById("seccionIndividual").classList.remove("hidden");
 
     document.getElementById("btnIndividual").classList.add("scale-105");
     document.getElementById("btnCategoria").classList.remove("scale-105");
+
+    cargarEstadisticasJugador();
 }
 
 
-/* =======================
+/* =========================
    RENDIMIENTO CATEGORÍA
-======================= */
+========================= */
 async function cargarRendimientoCategoria() {
-    const categoriaId = categoriaJugador;
+    const categoriaId = localStorage.getItem("categoriaJugador");
 
-    const res = await fetch(`http://localhost:3000/api/categoria/rendimiento/${categoriaId}`);
+    const res = await fetch(`${BASE_URL}/api/categoria/rendimiento/${categoriaId}`);
     const data = await res.json();
 
     const cont = document.getElementById("rendimientoCategoria");
@@ -188,12 +198,12 @@ async function cargarRendimientoCategoria() {
 }
 
 
-/* =======================
+/* =========================
    ESTADÍSTICA PERSONAL
-======================= */
+========================= */
 async function cargarEstadisticasJugador() {
-    const res = await fetch(`http://localhost:3000/api/evento/jugador/${idJugador}/stats`);
-    const stats = await res.json();
+    const statsRes = await fetch(`${BASE_URL}/api/evento/jugador/${idJugador}/stats`);
+    const stats = await statsRes.json();
 
     document.getElementById("asistenciaTotal").innerText = stats.porcentaje + "%";
     document.getElementById("golesTotal").innerText = stats.goles;
@@ -202,16 +212,16 @@ async function cargarEstadisticasJugador() {
     document.getElementById("rojas").innerText = stats.rojas;
     document.getElementById("faltas").innerText = stats.faltasCometidas;
 
-    // Detalle tabla
-    const detalle = await fetch(`http://localhost:3000/api/evento/jugador/${idJugador}`);
-    const eventos = await detalle.json();
+    // Detalle
+    const detalleRes = await fetch(`${BASE_URL}/api/evento/jugador/${idJugador}`);
+    const eventos = await detalleRes.json();
 
     let html = "";
     eventos.forEach(e => {
         html += `
             <tr class="border-b">
-                <td class="p-2">${new Date(e.fecha).toLocaleDateString("es-CL")}</td>
-                <td class="p-2">${e.tipo}</td>
+                <td class="p-2">${new Date(e.fechaEvento).toLocaleDateString("es-CL")}</td>
+                <td class="p-2">${e.tipoEvento}</td>
                 <td class="p-2">${e.presente ? "Asistió" : "Faltó"}</td>
                 <td class="p-2">${e.goles}</td>
                 <td class="p-2">${e.asistenciasGol}</td>
@@ -223,9 +233,8 @@ async function cargarEstadisticasJugador() {
     document.getElementById("tablaDetalle").innerHTML = html;
 }
 
-/* =======================
-   MOSTRAR POR DEFECTO
-======================= */
+
+/* Mostrar Individual por defecto */
 mostrarIndividual();
 </script>
 

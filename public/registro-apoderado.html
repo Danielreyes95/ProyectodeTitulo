@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Crear Cuenta - Apoderado</title>
+  <title>Crear Cuenta </title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -56,10 +56,21 @@
           class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
           placeholder="Correo electrónico" required>
 
-        <input id="passwordApoderado" 
-          type="password"
-          class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
-          placeholder="Contraseña" required>
+        <!-- CONTRASEÑA + VER/OCULTAR -->
+        <div class="relative">
+          <input id="passwordApoderado" 
+            type="password"
+            class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600 pr-12" 
+            placeholder="Contraseña" required>
+
+          <button 
+            type="button"
+            onclick="togglePassword()"
+            class="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800"
+          >
+            👁
+          </button>
+        </div>
       </div>
 
       <!-- ======================================
@@ -101,9 +112,14 @@
   <script src="../js/config.js"></script>
 
   <!-- ===============================
-        JS REGISTRO
+        JS REGISTRO + TOGGLE PASSWORD
   ================================ -->
   <script>
+    function togglePassword() {
+      const input = document.getElementById("passwordApoderado");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
     async function crearCuenta() {
 
       const data = {
@@ -131,10 +147,8 @@
         return;
       }
 
-      // 🔥 REGISTRO EXITOSO → REDIRECCIÓN AUTOMÁTICA
       alert("Cuenta creada correctamente. Ahora puedes iniciar sesión.");
-      window.location.href = "index.html";   // ← vuelve al Login
-
+      window.location.href = "index.html";
     }
   </script>
 

@@ -29,6 +29,7 @@
 
     <form id="loginForm" class="flex flex-col gap-3">
 
+      <!-- RUT -->
       <div>
         <label for="rut" class="font-semibold">RUT</label>
         <input 
@@ -40,42 +41,53 @@
         />
       </div>
 
-      <div>
+      <!-- CONTRASEÑA CON VER/OCULTAR -->
+      <div class="relative">
         <label for="password" class="font-semibold">Contraseña</label>
+
         <input 
           type="password" 
           id="password" 
           placeholder="Ingresa tu contraseña"
-          class="w-full border rounded px-3 py-2 mt-1 focus:ring-2 focus:ring-amber-600"
+          class="w-full border rounded px-3 py-2 mt-1 focus:ring-2 focus:ring-amber-600 pr-10"
           required
         />
+
+        <!-- Botón ver/ocultar -->
+        <button 
+          type="button"
+          onclick="togglePassword()"
+          class="absolute right-3 top-[38px] text-gray-500 hover:text-gray-700"
+        >
+          👁
+        </button>
       </div>
 
+      <!-- BOTÓN INGRESAR -->
       <button 
         type="submit"
         class="bg-amber-600 hover:bg-amber-700 text-white py-2 rounded mt-3 shadow font-semibold">
         Ingresar
       </button>
 
+      <!-- RECUPERAR -->
       <p 
         class="text-blue-700 cursor-pointer text-sm text-center mt-2 hover:underline"
         onclick="mostrarRecuperar()">
         ¿Olvidaste tu contraseña?
       </p>
 
+      <!-- REGISTRAR -->
       <p 
         class="text-green-700 cursor-pointer text-center font-semibold hover:underline"
         onclick="window.location.href='registro-apoderado.html'">
-        Crear cuenta (Apoderado)
+        Crear cuenta
       </p>
 
     </form>
 
-    <!-- Mensaje antiguo (ya no se usa, pero lo dejamos por compatibilidad) -->
     <div id="msg" class="hidden mt-4 text-red-600 font-semibold text-center"></div>
   </div>
-
-
 
   <!-- =============================
         MODAL RECUPERAR CONTRASEÑA
@@ -111,9 +123,8 @@
 
   </div>
 
-
   <!-- =============================
-        MODAL DE NOTIFICACIÓN
+        MODAL NOTIFICACIÓN
   ============================== -->
   <div id="notificacion"
       class="hidden fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
@@ -129,12 +140,11 @@
 
   </div>
 
-
   <!-- JS -->
   <script src="./js/config.js"></script>
   <script src="./js/login.js"></script>
 
-  <!-- FUNCIONES PARA MODALES -->
+  <!-- FUNCIONES PARA MODALES Y PASSWORD -->
   <script>
     function mostrarRecuperar() {
       document.getElementById("modalRecuperar").classList.remove("hidden");
@@ -163,15 +173,18 @@
       ocultarRecuperar();
     }
 
-    // =============================
-    // MODAL DE NOTIFICACIÓN
-    // =============================
+    // ========= TOGGLE PASSWORD =========
+    function togglePassword() {
+      const input = document.getElementById("password");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    // ========= NOTIFICACIÓN =========
     function mostrarNotificacion(mensaje) {
       document.getElementById("msgNotificacion").innerText = mensaje;
       const modal = document.getElementById("notificacion");
       modal.classList.remove("hidden");
 
-      // Se cierra solo después de 3 segundos
       setTimeout(() => {
         modal.classList.add("hidden");
       }, 3000);

@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Rendimiento - Entrenador</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Estilos globales -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+
 </head>
 
-<body class="bg-gray-100">
+<body>
 
 <!-- VALIDACIÓN -->
 <script>
@@ -17,116 +25,125 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
 </script>
 
 <script src="../js/config.js"></script>
+<script src="../js/loadSidebar.js"></script>
 
-<div class="flex">
+<!-- === CONTENEDOR PARA EL SIDEBAR DINÁMICO === -->
+<div id="sidebar-container"></div>
 
-    <!-- SIDEBAR -->
-    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
-        <h2 class="text-xl font-bold mb-5 text-center">Entrenador</h2>
+<!-- BOTÓN MENÚ (móvil) -->
+<button id="btnMenu"
+    class="md:hidden fixed top-4 left-4 bg-blue-700 text-white p-2 rounded shadow z-50">
+    ☰
+</button>
 
-        <a href="./entrenador.html">Inicio</a>
-        <a href="./miCategoria.html">Mi Categoría</a>
-        <a href="./asistencia.html">Asistencia</a>
-        <a href="./rendimiento.html" class="font-bold underline">Rendimiento</a>
-        <a href="./avisos-entrenador.html">Avisos</a>
+<!-- SCRIPT PARA ACTIVAR SIDEBAR RESPONSIVE -->
+<script>
+document.addEventListener("click", () => {
+    const sidebar = document.querySelector("#sidebar");
+    const btnMenu = document.querySelector("#btnMenu");
 
-        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
-            Cerrar sesión
+    if (btnMenu) {
+        btnMenu.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+        });
+    }
+});
+</script>
+
+<!-- ==========================================
+            CONTENIDO PRINCIPAL
+=========================================== -->
+<main class="p-8">
+
+    <h1 class="text-3xl font-bold text-blue-700 mb-2">Rendimiento</h1>
+    <p class="text-gray-600 mb-6">
+        Visualiza las estadísticas de tu categoría y el detalle por jugador.
+    </p>
+
+    <!-- TABS -->
+    <div class="mb-6 flex gap-3">
+        <button id="btnTabCategoria"
+            class="px-5 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white shadow">
+            Rendimiento categoría
         </button>
-    </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="flex-1 p-8">
+        <button id="btnTabJugadores"
+            class="px-5 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">
+            Jugadores
+        </button>
+    </div>
 
-        <h1 class="text-3xl font-bold text-green-700 mb-2">Rendimiento</h1>
-        <p class="text-gray-600 mb-6">
-            Visualiza las estadísticas de tu categoría y el detalle por jugador.
-        </p>
+    <!-- ========================================
+            TAB CATEGORÍA
+    =========================================== -->
+    <section id="seccionCategoria" class="space-y-6">
 
-        <!-- BOTONES TABS -->
-        <div class="mb-6 flex gap-3">
-            <button id="btnTabCategoria"
-                    class="px-5 py-2 rounded-full text-sm font-semibold bg-green-600 text-white shadow">
-                Rendimiento categoría
-            </button>
+        <div class="bg-white rounded shadow p-6">
+            <h2 class="text-xl font-semibold mb-3">Resumen de la categoría</h2>
 
-            <button id="btnTabJugadores"
-                    class="px-5 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">
-                Jugadores
-            </button>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+
+                <div class="p-4 bg-blue-100 border-l-8 border-blue-600 rounded-lg shadow">
+                    <p class="text-gray-600">Eventos totales</p>
+                    <p id="catEventos" class="text-3xl font-bold text-blue-700">0</p>
+                </div>
+
+                <div class="p-4 bg-green-100 border-l-8 border-green-600 rounded-lg shadow">
+                    <p class="text-gray-600">Asistencia promedio</p>
+                    <p id="catAsistenciaProm" class="text-3xl font-bold text-green-700">0%</p>
+                </div>
+
+                <div class="p-4 bg-yellow-100 border-l-8 border-yellow-500 rounded-lg shadow">
+                    <p class="text-gray-600">Goles</p>
+                    <p id="catGoles" class="text-3xl font-bold text-yellow-600">0</p>
+                </div>
+
+                <div class="p-4 bg-purple-100 border-l-8 border-purple-600 rounded-lg shadow">
+                    <p class="text-gray-600">Asistencias de gol</p>
+                    <p id="catAsistenciasGol" class="text-3xl font-bold text-purple-700">0</p>
+                </div>
+
+            </div>
         </div>
 
-        <!-- =========================
-             TAB 1: CATEGORÍA
-        ========================== -->
-        <section id="seccionCategoria" class="space-y-4">
+        <!-- TABLA DETALLE -->
+        <div class="bg-white rounded shadow p-6">
+            <h2 class="text-xl font-semibold mb-3">Detalle acumulado</h2>
 
-            <!-- RESUMEN -->
-            <div class="bg-white rounded shadow p-4">
-                <h2 class="text-xl font-semibold mb-3">Resumen de la categoría</h2>
+            <table class="w-full text-sm table-auto">
+                <thead class="bg-gray-200 border-b">
+                    <tr>
+                        <th class="p-2 text-left">Métrica</th>
+                        <th class="p-2 text-right">Total</th>
+                    </tr>
+                </thead>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                <tbody id="tbodyCategoriaDetalle"></tbody>
+            </table>
+        </div>
+    </section>
 
-                    <div class="p-3 bg-green-50 rounded border">
-                        <p class="text-gray-600">Eventos totales</p>
-                        <p id="catEventos" class="text-2xl font-bold">0</p>
-                    </div>
+    <!-- ========================================
+            TAB JUGADORES
+    =========================================== -->
+    <section id="seccionJugadores" class="space-y-6 hidden">
 
-                    <div class="p-3 bg-blue-50 rounded border">
-                        <p class="text-gray-600">Asistencia promedio</p>
-                        <p id="catAsistenciaProm" class="text-2xl font-bold">0%</p>
-                    </div>
-
-                    <div class="p-3 bg-yellow-50 rounded border">
-                        <p class="text-gray-600">Goles</p>
-                        <p id="catGoles" class="text-2xl font-bold">0</p>
-                    </div>
-
-                    <div class="p-3 bg-purple-50 rounded border">
-                        <p class="text-gray-600">Asistencias de gol</p>
-                        <p id="catAsistenciasGol" class="text-2xl font-bold">0</p>
-                    </div>
-                </div>
+        <!-- BUSCADOR -->
+        <div class="bg-white rounded shadow p-6 flex flex-col md:flex-row md:items-center gap-4">
+            <div class="flex-1">
+                <label class="block text-sm font-semibold mb-1">Buscar jugador</label>
+                <input id="txtBuscarJugador" type="text"
+                       placeholder="Nombre o RUT..."
+                       class="w-full border rounded px-3 py-2 text-sm">
             </div>
+        </div>
 
-            <!-- TABLA DETALLADA -->
-            <div class="bg-white rounded shadow p-4">
-                <h2 class="text-xl font-semibold mb-3">Detalle acumulado</h2>
+        <!-- TABLA JUGADORES -->
+        <div class="bg-white rounded shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Rendimiento por jugador</hh2>
 
-                <table class="w-full text-sm table-auto">
-                    <thead>
-                        <tr class="bg-gray-200 border-b">
-                            <th class="p-2 text-left">Métrica</th>
-                            <th class="p-2 text-right">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyCategoriaDetalle">
-                        <!-- Se llena por JS -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- =========================
-             TAB 2: JUGADORES
-        ========================== -->
-        <section id="seccionJugadores" class="space-y-4 hidden">
-
-            <!-- BUSCADOR -->
-            <div class="bg-white rounded shadow p-4 flex flex-col md:flex-row md:items-center gap-3">
-                <div class="flex-1">
-                    <label class="block text-sm font-semibold mb-1">Buscar jugador</label>
-                    <input id="txtBuscarJugador" type="text"
-                           placeholder="Nombre o RUT..."
-                           class="w-full border rounded px-3 py-2 text-sm">
-                </div>
-            </div>
-
-            <!-- TABLA JUGADORES -->
-            <div class="bg-white rounded shadow p-4">
-                <h2 class="text-xl font-semibold mb-3">Rendimiento por jugador</h2>
-
-                <table class="w-full text-sm table-auto">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm table-auto min-w-[900px]">
                     <thead>
                         <tr class="bg-gray-200 border-b">
                             <th class="p-2 text-left">Nombre</th>
@@ -139,17 +156,17 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
                             <th class="p-2 text-center">Detalle</th>
                         </tr>
                     </thead>
-                    <tbody id="tbodyJugadores">
-                        <!-- Filas dinámicas -->
-                    </tbody>
+
+                    <tbody id="tbodyJugadores"></tbody>
                 </table>
             </div>
+        </div>
 
-        </section>
+    </section>
 
-    </main>
+</main>
+
 </div>
-
 <script>
 function logout() {
     localStorage.clear();
@@ -163,7 +180,7 @@ const categoriaId = localStorage.getItem("categoria");
 
 let jugadores = [];
 let statsPorJugador = {};   // { jugadorId: stats }
-let eventosCategoria = [];  // lista de eventos de la categoría
+let eventosCategoria = [];  // eventos de la categoría
 
 /* ===========================================
    INIT
@@ -183,28 +200,26 @@ function configurarTabs() {
     const secJug = document.getElementById("seccionJugadores");
 
     btnCat.addEventListener("click", () => {
-        btnCat.classList.remove("bg-gray-200", "text-gray-700");
-        btnCat.classList.add("bg-green-600", "text-white");
+        btnCat.classList.add("bg-green-600","text-white");
+        btnCat.classList.remove("bg-gray-200","text-gray-700");
 
-        btnJug.classList.remove("bg-green-600", "text-white");
-        btnJug.classList.add("bg-gray-200", "text-gray-700");
+        btnJug.classList.add("bg-gray-200","text-gray-700");
+        btnJug.classList.remove("bg-green-600","text-white");
 
         secCat.classList.remove("hidden");
         secJug.classList.add("hidden");
     });
 
     btnJug.addEventListener("click", () => {
-        btnJug.classList.remove("bg-gray-200", "text-gray-700");
-        btnJug.classList.add("bg-green-600", "text-white");
+        btnJug.classList.add("bg-green-600","text-white");
+        btnJug.classList.remove("bg-gray-200","text-gray-700");
 
-        btnCat.classList.remove("bg-green-600", "text-white");
-        btnCat.classList.add("bg-gray-200", "text-gray-700");
+        btnCat.classList.add("bg-gray-200","text-gray-700");
+        btnCat.classList.remove("bg-green-600","text-white");
 
-        secJug.classList.remove("hidden");
         secCat.classList.add("hidden");
+        secJug.classList.remove("hidden");
     });
-
-    // Por defecto: categoría visible
 }
 
 /* ===========================================
@@ -238,11 +253,9 @@ async function cargarEventosCategoria() {
    2) JUGADORES + STATS
 =========================================== */
 async function cargarJugadoresYStats() {
-    // Jugadores de la categoría
     const resJug = await fetch(`${BASE_URL}/api/jugadores/categoria/${categoriaId}`);
     jugadores = await resJug.json();
 
-    // Por cada jugador, obtener sus estadísticas
     statsPorJugador = {};
     for (const j of jugadores) {
         const resStats = await fetch(`${BASE_URL}/api/evento/jugador/${j._id}/stats`);
@@ -252,48 +265,37 @@ async function cargarJugadoresYStats() {
 }
 
 /* ===========================================
-   RENDER: TAB CATEGORÍA
+   RENDER TAB CATEGORÍA
 =========================================== */
 function renderCategoria() {
     const totalEventos = eventosCategoria.length;
 
-    let sumaAsistenciaEventos = 0;
-
-    // Eventos ya traen porcentaje de asistencia (porcentajeAsistencia)
+    let sumaAsistencia = 0;
     eventosCategoria.forEach(e => {
-        sumaAsistenciaEventos += e.porcentajeAsistencia || 0;
+        sumaAsistencia += e.porcentajeAsistencia || 0;
     });
 
     const asistenciaProm = totalEventos > 0
-        ? (sumaAsistenciaEventos / totalEventos).toFixed(1)
+        ? (sumaAsistencia / totalEventos).toFixed(1)
         : 0;
 
-    // Acumular métricas desde statsPorJugador
-    let totGoles = 0;
-    let totAsistGol = 0;
-    let totPasesClave = 0;
-    let totRecuperaciones = 0;
-    let totTirosArco = 0;
-    let totFaltasCometidas = 0;
-    let totFaltasRecibidas = 0;
-    let totAmarillas = 0;
-    let totRojas = 0;
+    let totGoles = 0, totAsistGol = 0, totPases = 0, totRec = 0;
+    let totTiros = 0, totFC = 0, totFR = 0, totAma = 0, totRojas = 0;
 
     Object.values(statsPorJugador).forEach(s => {
-        totGoles          += s.goles || 0;
-        totAsistGol       += s.asistenciasGol || 0;
-        totPasesClave     += s.pasesClave || 0;
-        totRecuperaciones += s.recuperaciones || 0;
-        totTirosArco      += s.tirosArco || 0;
-        totFaltasCometidas+= s.faltasCometidas || 0;
-        totFaltasRecibidas+= s.faltasRecibidas || 0;
-        totAmarillas      += s.amarillas || 0;
-        totRojas          += s.rojas || 0;
+        totGoles      += s.goles || 0;
+        totAsistGol   += s.asistenciasGol || 0;
+        totPases      += s.pasesClave || 0;
+        totRec        += s.recuperaciones || 0;
+        totTiros      += s.tirosArco || 0;
+        totFC         += s.faltasCometidas || 0;
+        totFR         += s.faltasRecibidas || 0;
+        totAma        += s.amarillas || 0;
+        totRojas      += s.rojas || 0;
     });
 
-    // Tarjetas resumen
     document.getElementById("catEventos").innerText = totalEventos;
-    document.getElementById("catAsistenciaProm").innerText = `${asistenciaProm}%`;
+    document.getElementById("catAsistenciaProm").innerText = asistenciaProm + "%";
     document.getElementById("catGoles").innerText = totGoles;
     document.getElementById("catAsistenciasGol").innerText = totAsistGol;
 
@@ -306,12 +308,12 @@ function renderCategoria() {
         { nombre: "Asistencia promedio (%)", valor: `${asistenciaProm}%` },
         { nombre: "Goles", valor: totGoles },
         { nombre: "Asistencias de gol", valor: totAsistGol },
-        { nombre: "Pases clave", valor: totPasesClave },
-        { nombre: "Recuperaciones", valor: totRecuperaciones },
-        { nombre: "Tiros al arco", valor: totTirosArco },
-        { nombre: "Faltas cometidas", valor: totFaltasCometidas },
-        { nombre: "Faltas recibidas", valor: totFaltasRecibidas },
-        { nombre: "Tarjetas amarillas", valor: totAmarillas },
+        { nombre: "Pases clave", valor: totPases },
+        { nombre: "Recuperaciones", valor: totRec },
+        { nombre: "Tiros al arco", valor: totTiros },
+        { nombre: "Faltas cometidas", valor: totFC },
+        { nombre: "Faltas recibidas", valor: totFR },
+        { nombre: "Tarjetas amarillas", valor: totAma },
         { nombre: "Tarjetas rojas", valor: totRojas }
     ];
 
@@ -326,7 +328,7 @@ function renderCategoria() {
 }
 
 /* ===========================================
-   RENDER: TAB JUGADORES (tabla + expandible)
+   RENDER TAB JUGADORES
 =========================================== */
 function renderJugadores(filtro = "") {
     const tbody = document.getElementById("tbodyJugadores");
@@ -334,32 +336,29 @@ function renderJugadores(filtro = "") {
 
     const texto = filtro.trim().toLowerCase();
 
-    const listaFiltrada = jugadores.filter(j => {
-        if (!texto) return true;
-        const nombre = (j.nombre || "").toLowerCase();
-        const rut = (j.rut || "").toLowerCase();
-        return nombre.includes(texto) || rut.includes(texto);
+    const filtrados = jugadores.filter(j => {
+        const nom = j.nombre.toLowerCase();
+        const rut = j.rut.toLowerCase();
+        return nom.includes(texto) || rut.includes(texto);
     });
 
-    listaFiltrada.forEach(j => {
-        const stats = statsPorJugador[j._id] || {};
-
-        const porcentaje = stats.porcentaje || 0;
+    filtrados.forEach(j => {
+        const s = statsPorJugador[j._id] || {};
+        const pct = s.porcentaje || 0;
 
         const rowId = `fila-${j._id}`;
-        const detalleId = `detalle-${j._id}`;
-        const contDetalleId = `contenedor-detalle-${j._id}`;
+        const detalleRowId = `detalle-${j._id}`;
+        const contId = `contenedor-detalle-${j._id}`;
 
-        // Fila principal
         tbody.innerHTML += `
             <tr id="${rowId}" class="border-b bg-white">
                 <td class="p-2">${j.nombre}</td>
                 <td class="p-2">${j.rut}</td>
-                <td class="p-2 text-center">${porcentaje}%</td>
-                <td class="p-2 text-center">${stats.goles || 0}</td>
-                <td class="p-2 text-center">${stats.asistenciasGol || 0}</td>
-                <td class="p-2 text-center">${stats.amarillas || 0}</td>
-                <td class="p-2 text-center">${stats.rojas || 0}</td>
+                <td class="p-2 text-center">${pct}%</td>
+                <td class="p-2 text-center">${s.goles || 0}</td>
+                <td class="p-2 text-center">${s.asistenciasGol || 0}</td>
+                <td class="p-2 text-center">${s.amarillas || 0}</td>
+                <td class="p-2 text-center">${s.rojas || 0}</td>
                 <td class="p-2 text-center">
                     <button class="px-3 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700"
                             onclick="toggleDetalleJugador('${j._id}')">
@@ -367,9 +366,10 @@ function renderJugadores(filtro = "") {
                     </button>
                 </td>
             </tr>
-            <tr id="${detalleId}" class="hidden bg-gray-50">
+
+            <tr id="${detalleRowId}" class="hidden bg-gray-50">
                 <td colspan="8" class="p-3">
-                    <div id="${contDetalleId}" class="text-sm text-gray-700">
+                    <div id="${contId}" class="text-sm text-gray-700">
                         Cargando detalle...
                     </div>
                 </td>
@@ -383,23 +383,20 @@ function renderJugadores(filtro = "") {
 =========================================== */
 function configurarBuscador() {
     const input = document.getElementById("txtBuscarJugador");
-    input.addEventListener("input", () => {
-        renderJugadores(input.value);
-    });
+    input.addEventListener("input", () => renderJugadores(input.value));
 }
 
 /* ===========================================
-   DETALLE EXPANDIBLE POR JUGADOR
+   DETALLE POR JUGADOR
 =========================================== */
 async function toggleDetalleJugador(jugadorId) {
-    const filaDetalle = document.getElementById(`detalle-${jugadorId}`);
+    const fila = document.getElementById(`detalle-${jugadorId}`);
     const cont = document.getElementById(`contenedor-detalle-${jugadorId}`);
 
-    const estaOculto = filaDetalle.classList.contains("hidden");
+    const oculto = fila.classList.contains("hidden");
 
-    if (estaOculto) {
-        // Mostrar y cargar si es necesario
-        filaDetalle.classList.remove("hidden");
+    if (oculto) {
+        fila.classList.remove("hidden");
 
         if (!cont.dataset.cargado) {
             const res = await fetch(`${BASE_URL}/api/evento/jugador/${jugadorId}`);
@@ -434,16 +431,14 @@ async function toggleDetalleJugador(jugadorId) {
                         <tr class="border-b">
                             <td class="p-1">${fecha}</td>
                             <td class="p-1">${r.tipo}</td>
-                            <td class="p-1 text-center">
-                                ${r.presente ? "🟢" : "🔴"}
-                            </td>
+                            <td class="p-1 text-center">${r.presente ? "🟢" : "🔴"}</td>
                             <td class="p-1 text-center">${r.goles || 0}</td>
                             <td class="p-1 text-center">${r.asistenciasGol || 0}</td>
                             <td class="p-1 text-center">${r.pasesClave || 0}</td>
                             <td class="p-1 text-center">${r.recuperaciones || 0}</td>
                             <td class="p-1 text-center">${r.tirosArco || 0}</td>
-                            <td class="p-1 text-center">${r.amarilla ? "1" : "0"}</td>
-                            <td class="p-1 text-center">${r.roja ? "1" : "0"}</td>
+                            <td class="p-1 text-center">${r.amarilla ? 1 : 0}</td>
+                            <td class="p-1 text-center">${r.roja ? 1 : 0}</td>
                         </tr>
                     `;
                 });
@@ -454,12 +449,9 @@ async function toggleDetalleJugador(jugadorId) {
 
             cont.dataset.cargado = "1";
         }
+
     } else {
-        // Ocultar
-        filaDetalle.classList.add("hidden");
+        fila.classList.add("hidden");
     }
 }
 </script>
-
-</body>
-</html>

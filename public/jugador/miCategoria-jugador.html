@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Categoría</title>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Estilos globales -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 
 <body class="bg-gray-100">
@@ -18,10 +24,18 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
 
 <script src="../js/config.js"></script>
 
-<div class="p-6 max-w-5xl mx-auto">
+<!-- SIDEBAR AUTO -->
+<div id="sidebar-container"></div>
+<script src="../js/loadSidebar.js"></script>
 
+<!-- ===========================
+     CONTENIDO PRINCIPAL
+=========================== -->
+<main class="p-6 md:ml-60 max-w-5xl mx-auto">
+
+    <!-- VOLVER -->
     <button onclick="window.location.href='./jugador.html'" 
-            class="bg-gray-300 px-4 py-2 rounded mb-4 hover:bg-gray-400">
+        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded shadow mb-4">
         ← Volver
     </button>
 
@@ -30,7 +44,9 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
     </h1>
 
     <!-- Información general -->
-    <div id="infoCategoria" class="bg-white p-6 rounded-xl shadow mb-8"></div>
+    <div id="infoCategoria" class="bg-white p-6 rounded-xl shadow mb-8">
+        Cargando...
+    </div>
 
     <!-- Jugadores -->
     <div class="bg-white p-6 rounded-xl shadow">
@@ -38,60 +54,89 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
             Jugadores de la categoría
         </h2>
 
-        <table class="w-full text-left">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-2">Nombre</th>
-                    <th class="p-2">RUT</th>
-                </tr>
-            </thead>
-            <tbody id="listaJugadores"></tbody>
-        </table>
+        <div class="responsive-table">
+            <table class="w-full min-w-[500px] text-left">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="p-2">Nombre</th>
+                        <th class="p-2">RUT</th>
+                    </tr>
+                </thead>
+                <tbody id="listaJugadores"></tbody>
+            </table>
+        </div>
     </div>
 
-</div>
+</main>
 
+<!-- ===========================
+     SCRIPTS
+=========================== -->
 <script>
 const categoriaId = localStorage.getItem("categoriaJugador");
-const nombreJugador = localStorage.getItem("nombreJugador");
-const categoriaNombre = localStorage.getItem("categoriaNombreJugador");
 
 /* ============================================================
    1. Cargar datos generales de la categoría
 ============================================================ */
 async function cargarCategoria() {
+    try {
+        const res = await fetch(`${BASE_URL}/api/categoria/${categoriaId}`);
+        const data = await res.json();
 
-    const res = await fetch(`${BASE_URL}/api/categoria/${categoriaId}`);
-    const data = await res.json();
+        if (!data || data.error) {
+            document.getElementById("infoCategoria").innerHTML =
+                "<p class='text-red-600 font-semibold'>Error al cargar categoría.</p>";
+            return;
+        }
 
-    document.getElementById("infoCategoria").innerHTML = `
-        <p class="text-gray-700"><strong>Categoría:</strong> ${data.nombre}</p>
-        <p class="text-gray-700"><strong>Entrenador:</strong> ${data.entrenador?.nombre || "Sin entrenador asignado"}</p>
-        <p class="text-gray-700"><strong>Edad mínima:</strong> ${data.edadMin}</p>
-        <p class="text-gray-700"><strong>Edad máxima:</strong> ${data.edadMax}</p>
-    `;
+        document.getElementById("infoCategoria").innerHTML = `
+            <p class="text-gray-700"><strong>Categoría:</strong> ${data.nombre}</p>
+            <p class="text-gray-700"><strong>Entrenador:</strong> ${data.entrenador?.nombre || "Sin entrenador asignado"}</p>
+            <p class="text-gray-700"><strong>Edad mínima:</strong> ${data.edadMin}</p>
+            <p class="text-gray-700"><strong>Edad máxima:</strong> ${data.edadMax}</p>
+        `;
+
+    } catch (err) {
+        document.getElementById("infoCategoria").innerHTML =
+            "<p class='text-red-600'>Error al obtener información.</p>";
+    }
 }
 
 /* ============================================================
    2. Cargar jugadores de la categoría
 ============================================================ */
 async function cargarJugadores() {
+    try {
+        const res = await fetch(`${BASE_URL}/api/jugadores/categoria/${categoriaId}`);
+        const jugadores = await res.json();
 
-    const res = await fetch(`${BASE_URL}/api/jugadores/categoria/${categoriaId}`);
-    const jugadores = await res.json();
+        const tbody = document.getElementById("listaJugadores");
+        tbody.innerHTML = "";
 
-    const tbody = document.getElementById("listaJugadores");
-    tbody.innerHTML = "";
+        if (!Array.isArray(jugadores) || jugadores.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="2" class="p-3 text-center text-gray-500">
+                        No hay jugadores registrados.
+                    </td>
+                </tr>`;
+            return;
+        }
 
-    jugadores.forEach(j => {
+        jugadores.forEach(j => {
+            tbody.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-2 truncate-mobile">${j.nombre}</td>
+                    <td class="p-2">${j.rut}</td>
+                </tr>
+            `;
+        });
 
-        tbody.innerHTML += `
-            <tr class="border-b">
-                <td class="p-2">${j.nombre}</td>
-                <td class="p-2">${j.rut}</td>
-            </tr>
+    } catch (err) {
+        document.getElementById("listaJugadores").innerHTML = `
+            <tr><td colspan="2" class="p-2 text-red-600">Error al cargar jugadores.</td></tr>
         `;
-    });
+    }
 }
 
 cargarCategoria();

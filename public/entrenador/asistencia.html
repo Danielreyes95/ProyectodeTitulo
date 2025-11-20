@@ -2,126 +2,132 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Asistencia</title>
+    <title>Asistencia - Entrenador</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
 </head>
 
 <body class="bg-gray-100">
 
+<!-- CONFIG GLOBAL -->
 <script src="../js/config.js"></script>
 
+<!-- VALIDACIÓN -->
 <script>
-// Validación acceso
 if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
     window.location.href = "../index.html";
 }
 </script>
 
-<div class="flex">
+<!-- SIDEBAR DINÁMICO -->
+<div id="sidebar-container"></div>
+<script src="../js/loadSidebar.js"></script>
 
-    <!-- SIDEBAR -->
-    <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
-        <h2 class="text-xl font-bold mb-5 text-center">Entrenador</h2>
+<!-- ================================
+     CONTENIDO
+================================ -->
+<main class="p-4 sm:p-8 md:ml-60 max-w-6xl mx-auto">
 
-        <a href="./entrenador.html">Inicio</a>
-        <a href="./miCategoria.html">Mi Categoría</a>
-        <a href="./asistencia.html" class="font-bold underline">Asistencia</a>
-        <a href="./rendimiento.html">Rendimiento</a>
-        <a href="./avisos-entrenador.html">Avisos</a>
+    <!-- TÍTULO -->
+    <h1 class="text-2xl sm:text-3xl font-bold text-green-700 mb-6">
+        Registrar Asistencia
+    </h1>
 
-        <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
-            Cerrar sesión
-        </button>
-    </aside>
+    <!-- ================================
+         CREAR EVENTO
+    ================================ -->
+    <div class="bg-white p-6 rounded-xl shadow mb-10 border-l-8 border-green-600">
+        <h2 class="text-xl font-bold text-green-700 mb-4">Crear nuevo evento</h2>
 
-    <!-- CONTENIDO CENTRAL -->
-    <main class="flex-1 p-8">
+        <div class="grid sm:grid-cols-2 gap-6">
 
-        <h1 class="text-3xl font-bold text-green-700 mb-6">Registrar Asistencia</h1>
-
-        <!-- CREAR EVENTO -->
-        <div class="bg-white p-6 rounded shadow mb-6">
-            <h2 class="text-xl font-semibold mb-4">Crear nuevo evento</h2>
-
-            <div class="grid grid-cols-2 gap-6">
-                <div>
-                    <label class="font-semibold">Fecha Evento</label>
-                    <input id="fechaEvento" type="date" class="border p-2 w-full rounded">
-                </div>
-
-                <div>
-                    <label class="font-semibold">Tipo de Evento</label>
-                    <select id="tipoEvento" class="border p-2 w-full rounded">
-                        <option>Entrenamiento</option>
-                        <option>Partido</option>
-                        <option>Torneo</option>
-                    </select>
-                </div>
+            <div>
+                <label class="font-semibold">Fecha del Evento</label>
+                <input id="fechaEvento" type="date" class="input w-full">
             </div>
 
-            <button onclick="crearEvento()" 
-                class="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
-                Crear evento
-            </button>
+            <div>
+                <label class="font-semibold">Tipo de Evento</label>
+                <select id="tipoEvento" class="input w-full">
+                    <option value="Entrenamiento">Entrenamiento</option>
+                    <option value="Partido">Partido</option>
+                    <option value="Torneo">Torneo</option>
+                </select>
+            </div>
+
         </div>
 
-        <!-- EVENTOS PROGRAMADOS -->
-        <div class="bg-white p-6 rounded shadow mb-6">
-            <h2 class="text-xl font-semibold mb-4">🗓 Eventos Programados</h2>
+        <button onclick="crearEvento()"
+            class="btn bg-green-600 hover:bg-green-700 text-white mt-4 w-full sm:w-auto">
+            Crear evento
+        </button>
+    </div>
 
-            <table class="w-full">
-                <thead class="bg-gray-200">
+    <!-- ================================
+         EVENTOS PROGRAMADOS
+    ================================ -->
+    <div class="bg-white p-6 rounded-xl shadow mb-10 border-l-8 border-blue-600">
+        <h2 class="text-xl font-bold text-blue-700 mb-4">🗓 Eventos Programados</h2>
+
+        <div class="responsive-table">
+            <table class="table min-w-[600px]">
+                <thead>
                     <tr>
-                        <th class="p-2">Fecha</th>
-                        <th class="p-2">Tipo</th>
-                        <th class="p-2">Estado</th>
-                        <th class="p-2">Acciones</th>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyProgramados"></tbody>
             </table>
         </div>
+    </div>
 
-        <!-- EVENTOS ANTERIORES -->
-        <div class="bg-white p-6 rounded shadow">
-            <h2 class="text-xl font-semibold mb-4">📘 Eventos Anteriores</h2>
+    <!-- ================================
+         EVENTOS ANTERIORES
+    ================================ -->
+    <div class="bg-white p-6 rounded-xl shadow border-l-8 border-amber-600">
+        <h2 class="text-xl font-bold text-amber-700 mb-4">📘 Eventos Anteriores</h2>
 
-            <table class="w-full">
-                <thead class="bg-gray-200">
+        <div class="responsive-table">
+            <table class="table min-w-[600px]">
+                <thead>
                     <tr>
-                        <th class="p-2">Fecha</th>
-                        <th class="p-2">Tipo</th>
-                        <th class="p-2">Asistencia</th>
-                        <th class="p-2">Acciones</th>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Asistencia</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyAnteriores"></tbody>
             </table>
         </div>
+    </div>
 
-    </main>
-</div>
+</main>
 
 <script>
 
-function logout() {
-    localStorage.clear();
-    window.location.href = "../index.html";
-}
-
+// VARIABLES
 const categoriaId = localStorage.getItem("categoria");
 const entrenadorId = localStorage.getItem("idEntrenador");
 
-/* ======================================================
-   1. CREAR EVENTO PROGRAMADO
-====================================================== */
+/* ==========================================================
+   1. CREAR EVENTO
+========================================================== */
 async function crearEvento() {
     const fechaEvento = document.getElementById("fechaEvento").value;
     const tipoEvento = document.getElementById("tipoEvento").value;
 
     if (!fechaEvento) {
-        alert("Debe seleccionar una fecha");
+        alert("Debe seleccionar una fecha.");
         return;
     }
 
@@ -143,83 +149,76 @@ async function crearEvento() {
         return;
     }
 
-    alert("Evento programado correctamente.");
+    alert("Evento creado correctamente.");
     cargarEventos();
 }
 
-/* ======================================================
-   2. GENERAR ETIQUETA DE ESTADO (HOY, MAÑANA…)
-====================================================== */
+/* ==========================================================
+   2. ETIQUETAS DE ESTADO
+========================================================== */
 function obtenerEstadoVisual(fechaStr) {
-
     const hoy = new Date();
     const fecha = new Date(fechaStr);
 
-    const diffTiempo = fecha - hoy;
-    const dias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+    const diff = fecha - hoy;
+    const dias = Math.ceil(diff / (1000 * 60 * 60 * 24));
 
-    if (dias === 0) {
-        return `<span class="px-2 py-1 bg-green-600 text-white text-xs rounded">HOY</span>`;
-    }
+    if (dias === 0) return `<span class="estado verde">HOY</span>`;
+    if (dias === 1) return `<span class="estado azul">MAÑANA</span>`;
+    if (dias < 0) return `<span class="estado rojo">ATRASADO</span>`;
 
-    if (dias === 1) {
-        return `<span class="px-2 py-1 bg-blue-600 text-white text-xs rounded">MAÑANA</span>`;
-    }
-
-    if (dias < 0) {
-        return `<span class="px-2 py-1 bg-red-600 text-white text-xs rounded">ATRASADO</span>`;
-    }
-
-    return `<span class="px-2 py-1 bg-yellow-500 text-white text-xs rounded">PRÓXIMO EVENTO</span>`;
+    return `<span class="estado amarillo">PRÓXIMO</span>`;
 }
 
-/* ======================================================
-   3. CARGAR EVENTOS (PROGRAMADOS Y ANTERIORES)
-====================================================== */
+/* ==========================================================
+   3. CARGAR EVENTOS
+========================================================== */
 async function cargarEventos() {
     const res = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`);
     const eventos = await res.json();
 
-    const tbodyProgramados = document.getElementById("tbodyProgramados");
-    const tbodyAnteriores = document.getElementById("tbodyAnteriores");
+    const tbodyProgram = document.getElementById("tbodyProgramados");
+    const tbodyAnt = document.getElementById("tbodyAnteriores");
 
-    tbodyProgramados.innerHTML = "";
-    tbodyAnteriores.innerHTML = "";
+    tbodyProgram.innerHTML = "";
+    tbodyAnt.innerHTML = "";
 
     const hoy = new Date();
+    const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
 
     eventos.forEach(e => {
-
-        const fecha = new Date(e.fecha);
+        const fecha = new Date(e.fechaEvento);
         const fechaTxt = fecha.toLocaleDateString("es-CL");
-        const estadoVisual = obtenerEstadoVisual(e.fecha);
+        const estadoVisual = obtenerEstadoVisual(e.fechaEvento);
 
         const esProgramado =
-            e.cerrado === false &&
-            Number(e.porcentajeAsistencia) === 0 &&
-            fecha >= new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+            !e.cerrado &&
+            fecha >= hoySinHora &&
+            Number(e.porcentajeAsistencia || 0) === 0;
 
         const esAnterior =
-            e.cerrado === true ||
-            Number(e.porcentajeAsistencia) > 0 ||
-            fecha < new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+            e.cerrado ||
+            fecha < hoySinHora ||
+            Number(e.porcentajeAsistencia || 0) > 0;
 
-        /* ==============
+        /* ================================
            EVENTOS PROGRAMADOS
-           ============== */
+        ================================ */
         if (esProgramado) {
-            tbodyProgramados.innerHTML += `
-                <tr class="border-b">
-                    <td class="p-2">${fechaTxt}</td>
-                    <td class="p-2">${e.tipo}</td>
-                    <td class="p-2">${estadoVisual}</td>
-                    <td class="p-2 flex gap-2">
+            tbodyProgram.innerHTML += `
+                <tr>
+                    <td>${fechaTxt}</td>
+                    <td>${e.tipoEvento}</td>
+                    <td>${estadoVisual}</td>
+                    <td class="text-center flex gap-2 justify-center">
+
                         <button onclick="verEvento('${e._id}')"
-                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800">
+                            class="btn-sm bg-blue-600 hover:bg-blue-800 text-white">
                             Ir al evento
                         </button>
+
                         <button onclick="eliminarEvento('${e._id}')"
-                            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800">
+                            class="btn-sm bg-red-600 hover:bg-red-800 text-white">
                             Eliminar
                         </button>
                     </td>
@@ -227,24 +226,27 @@ async function cargarEventos() {
             `;
         }
 
-        /* ==============
+        /* ================================
            EVENTOS ANTERIORES
-           ============== */
+        ================================ */
         if (esAnterior) {
-            tbodyAnteriores.innerHTML += `
-                <tr class="border-b">
-                    <td class="p-2">${fechaTxt}</td>
-                    <td class="p-2">${e.tipo}</td>
-                    <td class="p-2">${e.porcentajeAsistencia}%</td>
-                    <td class="p-2 flex gap-2">
+            tbodyAnt.innerHTML += `
+                <tr>
+                    <td>${fechaTxt}</td>
+                    <td>${e.tipoEvento}</td>
+                    <td>${e.porcentajeAsistencia || 0}%</td>
+                    <td class="text-center flex gap-2 justify-center">
+
                         <button onclick="verEvento('${e._id}')"
-                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800">
+                            class="btn-sm bg-blue-600 hover:bg-blue-800 text-white">
                             Ver
                         </button>
+
                         <button onclick="eliminarEvento('${e._id}')"
-                            class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800">
+                            class="btn-sm bg-red-600 hover:bg-red-800 text-white">
                             Eliminar
                         </button>
+
                     </td>
                 </tr>
             `;
@@ -253,17 +255,17 @@ async function cargarEventos() {
     });
 }
 
-/* ======================================================
-   4. IR A DETALLE DE EVENTO
-====================================================== */
+/* ==========================================================
+   4. VER EVENTO
+========================================================== */
 function verEvento(id) {
     localStorage.setItem("eventoSeleccionado", id);
     window.location.href = "./asistencia-evento.html";
 }
 
-/* ======================================================
-   5. ELIMINAR EVENTO
-====================================================== */
+/* ==========================================================
+   5. ELIMINAR
+========================================================== */
 async function eliminarEvento(id) {
     if (!confirm("¿Eliminar este evento?")) return;
 
@@ -273,15 +275,13 @@ async function eliminarEvento(id) {
 
     const data = await res.json();
 
-    if (data.error) {
-        alert("Error: " + data.error);
-        return;
-    }
+    if (data.error) return alert("Error: " + data.error);
 
-    alert("Evento eliminado");
+    alert("Evento eliminado.");
     cargarEventos();
 }
 
+/* INICIALIZACIÓN */
 cargarEventos();
 
 </script>

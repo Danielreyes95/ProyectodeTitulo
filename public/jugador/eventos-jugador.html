@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eventos del Jugador</title>
+
+    <!-- TAILWIND -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ESTILOS GLOBALES -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
 
     <style>
         .tag {
@@ -18,49 +24,60 @@
 
 <body class="bg-gray-100">
 
-<!-- VALIDACIÓN -->
+<!-- 🔐 VALIDACIÓN -->
 <script>
 if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
     window.location.href = "../index.html";
 }
 </script>
 
-<!-- ⚠️ IMPORTANTE PARA PRODUCCIÓN -->
+<!-- CONFIG -->
 <script src="../js/config.js"></script>
 
-<div class="p-6 max-w-4xl mx-auto">
+<!-- SIDEBAR DINÁMICO -->
+<div id="sidebar-container"></div>
+<script src="../js/loadSidebar.js"></script>
 
+<!-- ==============================
+     CONTENIDO PRINCIPAL
+============================== -->
+<main class="p-6 md:ml-60 transition-all max-w-4xl mx-auto">
+
+    <!-- VOLVER -->
     <button onclick="window.location.href='./jugador.html'" 
-            class="bg-gray-300 px-4 py-2 rounded mb-4 hover:bg-gray-400">
+        class="bg-gray-200 px-4 py-2 rounded mb-5 shadow hover:bg-gray-300">
         ← Volver
     </button>
 
-    <h1 class="text-3xl font-bold text-green-700 mb-6">
-        Eventos de la categoría
+    <h1 class="text-3xl font-bold text-green-700 mb-3">
+        Eventos de la Categoría
     </h1>
 
-    <p class="text-gray-600 mb-4">
-        Jugador: <span class="font-semibold" id="nombreJugador"></span>
-        • Categoría: <span class="font-semibold" id="categoriaJugador"></span>
+    <p class="text-gray-600 mb-6">
+        Jugador: <span class="font-semibold" id="nombreJugador"></span> •  
+        Categoría: <span class="font-semibold" id="categoriaJugador"></span>
     </p>
 
-    <!-- Contenedor Eventos -->
+    <!-- CONTENEDOR EVENTOS -->
     <div id="contenedorEventos" class="grid gap-6"></div>
 
-</div>
+</main>
 
+<!-- ==============================
+     SCRIPT LÓGICA
+============================== -->
 <script>
 const idJugador = localStorage.getItem("idJugador");
-const categoriaJugador = localStorage.getItem("categoriaJugador"); // ID categoría
+const categoriaJugador = localStorage.getItem("categoriaJugador");
 const nombreJugador = localStorage.getItem("nombreJugador");
 const categoriaNombreJugador = localStorage.getItem("categoriaNombreJugador");
 
 document.getElementById("nombreJugador").innerText = nombreJugador;
 document.getElementById("categoriaJugador").innerText = categoriaNombreJugador;
 
-/* =========================================================
-   CARGAR EVENTOS DE LA CATEGORÍA DEL JUGADOR
-========================================================= */
+/* ============================================================
+   CARGAR EVENTOS  
+============================================================ */
 async function cargarEventos() {
     const cont = document.getElementById("contenedorEventos");
     cont.innerHTML = `<p class="text-gray-500">Cargando eventos...</p>`;
@@ -71,7 +88,7 @@ async function cargarEventos() {
 
         cont.innerHTML = "";
 
-        if (eventos.length === 0) {
+        if (!Array.isArray(eventos) || eventos.length === 0) {
             cont.innerHTML = `<p class="text-gray-600">No hay eventos registrados.</p>`;
             return;
         }
@@ -79,50 +96,41 @@ async function cargarEventos() {
         const hoy = new Date();
 
         eventos.forEach(ev => {
-            const fecha = new Date(ev.fecha);
+            const fecha = new Date(ev.fechaEvento);
             const fechaTxt = fecha.toLocaleDateString("es-CL");
+
             const esFuturo = fecha >= new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
 
-            const estadoAsistencia = ev.porcentajeAsistencia > 0
-                ? `<span class="tag bg-green-100 text-green-700">${ev.porcentajeAsistencia}% asistencia</span>`
-                : `<span class="tag bg-gray-200 text-gray-700">Sin registro</span>`;
-
             cont.innerHTML += `
-                <div class="bg-white p-5 rounded-xl shadow border-l-8 ${esFuturo ? "border-blue-600" : "border-gray-500"}">
+                <div class="bg-white p-5 rounded-xl shadow border-l-8 
+                    ${esFuturo ? "border-blue-600" : "border-gray-500"}">
 
                     <div class="flex items-center justify-between">
-                        <h2 class="text-xl font-semibold text-green-700">
-                            ${ev.tipo}
-                        </h2>
-
-                        ${esFuturo 
-                            ? `<span class="tag bg-blue-100 text-blue-700">Próximo</span>` 
-                            : `<span class="tag bg-gray-300 text-gray-700">Pasado</span>`}
+                        <h2 class="text-xl font-semibold text-green-700">${ev.tipoEvento}</h2>
+                        <span class="tag ${esFuturo ? "bg-blue-100 text-blue-700" : "bg-gray-300 text-gray-700"}">
+                            ${esFuturo ? "Próximo" : "Pasado"}
+                        </span>
                     </div>
 
                     <p class="text-gray-600 mt-1">
                         Fecha: <span class="font-medium">${fechaTxt}</span>
                     </p>
 
-                    <div class="mt-3">
-                        ${estadoAsistencia}
-                    </div>
+                    <div class="mt-4 flex flex-wrap gap-3">
 
-                    <div class="mt-4 flex gap-3">
-
+                        <!-- VER DETALLE -->
                         <button onclick="verDetalle('${ev._id}')"
                             class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700">
                             Ver detalles
                         </button>
 
-                        ${
-                            esFuturo
-                            ? `<button onclick="confirmarAsistencia('${ev._id}')"
+                        <!-- CONFIRMAR ASISTENCIA -->
+                        ${esFuturo ? `
+                            <button onclick="confirmarAsistencia('${ev._id}')"
                                 class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">
                                 Confirmar asistencia
-                               </button>`
-                            : ""
-                        }
+                            </button>
+                        ` : ""}
                     </div>
                 </div>
             `;
@@ -133,23 +141,22 @@ async function cargarEventos() {
     }
 }
 
-/* =========================================================
-   VER DETALLE DEL EVENTO
-========================================================= */
+/* ============================================================
+   VER DETALLE
+============================================================ */
 function verDetalle(eventoId) {
     localStorage.setItem("eventoJugadorSeleccionado", eventoId);
     window.location.href = "./detalle-evento-jugador.html";
 }
 
-/* =========================================================
-   CONFIRMAR ASISTENCIA (SOLO JUGADOR)
-========================================================= */
+/* ============================================================
+   CONFIRMAR ASISTENCIA
+============================================================ */
 async function confirmarAsistencia(eventoId) {
-    const confirmar = confirm("¿Confirmas tu asistencia a este evento?");
-    if (!confirmar) return;
+    if (!confirm("¿Confirmas tu asistencia a este evento?")) return;
 
     try {
-        const res = await fetch(`${BASE_URL}/api/evento/${eventoId}/asistencia/${idJugador}`, {
+        await fetch(`${BASE_URL}/api/evento/${eventoId}/asistencia/${idJugador}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -158,8 +165,6 @@ async function confirmarAsistencia(eventoId) {
                 motivoInasistencia: ""
             })
         });
-
-        const data = await res.json();
 
         alert("Asistencia confirmada ✔");
         cargarEventos();

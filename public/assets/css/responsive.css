@@ -1,0 +1,104 @@
+/* ============================================================
+   RESPONSIVE GLOBAL PARA TODAS LAS VISTAS
+   Compatible con Tailwind + styles.css
+============================================================ */
+
+/* ------------------------------
+   Sidebar responsive
+------------------------------ */
+@media (max-width: 768px) {
+
+  /* Sidebar oculto por defecto */
+  #sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    height: 100vh;
+    width: 240px !important;
+    transition: left 0.3s ease-in-out;
+    z-index: 50;
+  }
+
+  /* Sidebar visible cuando se activa */
+  #sidebar.active {
+    left: 0;
+  }
+
+  /* Empujar contenido solo en PC */
+  main {
+    margin-left: 0 !important;
+  }
+}
+
+/* ------------------------------
+   Contenido con sidebar en PC
+------------------------------ */
+@media (min-width: 768px) {
+  main {
+    margin-left: 240px;
+  }
+}
+
+/* ------------------------------
+   Tablas responsive
+------------------------------ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.responsive-table {
+  overflow-x: auto;
+  width: 100%;
+}
+
+table th, table td {
+  white-space: nowrap;
+}
+
+/* ------------------------------
+   Ajustes de textos en móvil
+------------------------------ */
+@media (max-width: 480px) {
+
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .card {
+    padding: 15px !important;
+  }
+
+  input, select {
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* ------------------------------
+   Botón de menú (hamburguesa)
+------------------------------ */
+#btnMenu {
+  z-index: 200;
+}
+
+/* ------------------------------
+   Ocultar textos largos si no caben
+------------------------------ */
+.truncate-mobile {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ------------------------------
+   Fix para tablas de eventos
+------------------------------ */
+.min-w-600 {
+  min-width: 600px;
+}

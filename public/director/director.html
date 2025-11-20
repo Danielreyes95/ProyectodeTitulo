@@ -2,12 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - Director</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Estilos Globales -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+
     <style>
-        /* Notificación flotante */
         #toastAviso {
             position: fixed;
             top: 20px;
@@ -21,121 +26,161 @@
             transition: right 0.5s ease;
             z-index: 9999;
         }
+
+        /* Tarjetas acceso rápido */
+        .card-acceso {
+            display: block;
+            background: white;
+            border-left-width: 6px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-acceso:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        }
+
+        .titulo-acceso {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .sub-acceso {
+            font-size: 0.9rem;
+            color: #555;
+        }
     </style>
 </head>
 
 <body class="bg-gray-100">
 
-<!-- 🔐 Validación -->
+<!-- =============================
+        VALIDACIÓN
+============================= -->
 <script>
 if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director") {
     window.location.href = "../index.html";
 }
 </script>
 
-<!-- ======================================================
-     CONTENIDO SIN SIDEBAR
-====================================================== -->
-<main class="p-10 min-h-screen relative flex flex-col">
+<!-- =============================
+        SIDEBAR + MENU
+============================= -->
 
-    <!-- TÍTULO -->
+<!-- BOTÓN MENÚ (MÓVIL) -->
+<button id="btnMenu"
+    class="md:hidden fixed top-4 left-4 bg-green-700 text-white p-2 rounded shadow z-50">
+    ☰
+</button>
+
+<!-- SIDEBAR DINÁMICO -->
+<div id="sidebar-container"></div>
+
+<script src="../js/loadSidebar.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("btnMenu");
+
+    btn.addEventListener("click", () => {
+        const sidebar = document.querySelector("#sidebar");
+        if (sidebar) sidebar.classList.toggle("active");
+    });
+});
+</script>
+
+<!-- =============================
+        CONTENIDO PRINCIPAL
+============================= -->
+<main class="flex-1 p-6 md:p-10 md:ml-60 relative">
+
     <h1 class="text-3xl font-bold text-green-700">Bienvenido, Director</h1>
     <p class="text-gray-600 mb-10">Panel de administración general.</p>
 
-    <!-- ======================================================
-         ACCESOS RÁPIDOS (6 TARJETAS)
-    ======================================================= -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 z-10">
+    <!-- ACCESOS RÁPIDOS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
         <a href="./jugadores.html"
-           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-green-600 
-                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
-            <p class="text-xl font-bold text-green-700">Jugadores</p>
-            <p class="text-gray-500 text-sm">Administrar jugadores</p>
+           class="card-acceso border-green-600">
+            <p class="titulo-acceso text-green-700">Jugadores</p>
+            <p class="sub-acceso">Administrar jugadores</p>
         </a>
 
         <a href="./entrenadores.html"
-           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-blue-600 
-                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
-            <p class="text-xl font-bold text-blue-700">Entrenadores</p>
-            <p class="text-gray-500 text-sm">Gestión completa</p>
+           class="card-acceso border-blue-600">
+            <p class="titulo-acceso text-blue-700">Entrenadores</p>
+            <p class="sub-acceso">Gestión completa</p>
         </a>
 
         <a href="./categorias.html"
-           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-amber-600 
-                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
-            <p class="text-xl font-bold text-amber-700">Categorías</p>
-            <p class="text-gray-500 text-sm">Clasificación por edad</p>
+           class="card-acceso border-amber-600">
+            <p class="titulo-acceso text-amber-700">Categorías</p>
+            <p class="sub-acceso">Clasificación por edad</p>
         </a>
 
         <a href="./pagos.html"
-           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-yellow-500
-                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
-            <p class="text-xl font-bold text-yellow-600">Pagos</p>
-            <p class="text-gray-500 text-sm">Control de mensualidades</p>
+           class="card-acceso border-yellow-500">
+            <p class="titulo-acceso text-yellow-600">Pagos</p>
+            <p class="sub-acceso">Control de mensualidades</p>
         </a>
 
         <a href="./avisos.html"
-           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-red-600
-                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
-            <p class="text-xl font-bold text-red-700">Avisos</p>
-            <p class="text-gray-500 text-sm">Comunicados del sistema</p>
+           class="card-acceso border-red-600">
+            <p class="titulo-acceso text-red-700">Avisos</p>
+            <p class="sub-acceso">Comunicados del sistema</p>
         </a>
 
         <a href="./reportes.html"
-           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-purple-600
-                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
-            <p class="text-xl font-bold text-purple-700">Reportes</p>
-            <p class="text-gray-500 text-sm">Informes detallados</p>
+           class="card-acceso border-purple-600">
+            <p class="titulo-acceso text-purple-700">Reportes</p>
+            <p class="sub-acceso">Informes detallados</p>
         </a>
 
     </div>
 
-    <!-- ======================================================
-         BOTÓN CERRAR SESIÓN
-    ======================================================= -->
-    <div class="mt-auto mb-10 z-10">
+    <!-- BOTÓN CERRAR SESIÓN -->
+    <div class="mt-10">
         <button onclick="logout()"
-                class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded shadow">
+            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded shadow">
             Cerrar sesión
         </button>
     </div>
 
     <!-- MARCA DE AGUA -->
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-0 pointer-events-none">
-        <h2 class="text-6xl md:text-7xl font-extrabold text-green-600 opacity-10 select-none">
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-0 pointer-events-none select-none">
+        <h2 class="text-6xl md:text-7xl font-extrabold text-green-600 opacity-10">
             Escuela de Fútbol
         </h2>
     </div>
 
 </main>
 
-<!-- 🔔 Notificación flotante -->
+<!-- NOTIFICACIÓN -->
 <div id="toastAviso"></div>
 
 <script src="../js/config.js"></script>
-
-<!-- Socket.io -->
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-/* ============================================================
-   SOCKET.IO con autenticación
-============================================================ */
-const socket = io(BASE_URL,{
+/* ===============================
+   SOCKET IO
+=============================== */
+const socket = io(BASE_URL, {
     auth: {
         userId: localStorage.getItem("userId"),
         rol: localStorage.getItem("rol")
     }
 });
 
-/* ============================================================
-   TOAST VISUAL
-============================================================ */
 function mostrarToast(titulo) {
     const toast = document.getElementById("toastAviso");
     toast.innerText = "🔔 Nuevo aviso: " + titulo;
     toast.style.right = "20px";
+
     setTimeout(() => {
         toast.style.right = "-400px";
     }, 4000);
@@ -143,9 +188,9 @@ function mostrarToast(titulo) {
 
 socket.on("nuevo-aviso", aviso => mostrarToast(aviso.titulo));
 
-/* ============================================================
+/* ===============================
    LOGOUT
-============================================================ */
+=============================== */
 function logout() {
     localStorage.clear();
     window.location.href = "../index.html";

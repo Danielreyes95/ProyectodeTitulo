@@ -1,0 +1,34 @@
+<!-- BOTÓN MENÚ (móvil) -->
+<button id="btnMenu" 
+    class="md:hidden fixed top-4 left-4 bg-amber-600 text-white p-2 rounded z-50 shadow">
+    ☰
+</button>
+
+<!-- SIDEBAR -->
+<aside id="sidebar"
+    class="bg-amber-600 text-white min-h-screen p-4 flex flex-col gap-4
+           w-60 hidden md:flex fixed md:static top-0 left-0">
+
+    <h2 class="text-xl font-bold text-center mt-10 md:mt-0">Jugador</h2>
+
+    <a href="../jugador/jugador.html">Inicio</a>
+    <a href="../jugador/pagos-jugador.html">Pagos</a>
+    <a href="../jugador/asistencia-jugador.html">Asistencia</a>
+    <a href="../jugador/rendimiento-jugador.html">Rendimiento</a>
+    <a href="../jugador/avisos-jugador.html">Avisos</a>
+
+    <button onclick="logout()" 
+        class="bg-red-600 hover:bg-red-700 mt-auto p-2 rounded">
+        Cerrar sesión
+    </button>
+</aside>
+
+<script>
+// Menú móvil
+const btnMenu = document.getElementById("btnMenu");
+const sidebar = document.getElementById("sidebar");
+
+btnMenu.addEventListener("click", () => {
+    sidebar.classList.toggle("hidden");
+});
+</script>
