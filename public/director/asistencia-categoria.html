@@ -66,6 +66,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
     </main>
 </div>
 
+<script src="../js/config.js"></script>
+
 <script>
 
 function logout() {
@@ -84,7 +86,7 @@ if (!idCategoria) {
 ========================================== */
 async function cargarCategoria() {
 
-    const res = await fetch(`http://localhost:3000/api/categorias/${idCategoria}`);
+    const res = await fetch(`${BASE_URL}/api/categorias/${idCategoria}`);
     const categoria = await res.json();
 
     document.getElementById("tituloCategoria").innerText =
@@ -104,7 +106,7 @@ async function cargarCategoria() {
 ========================================== */
 async function cargarEstadisticasCategoria() {
 
-    const res = await fetch(`http://localhost:3000/api/asistencia/categoria/${idCategoria}/stats`);
+    const res = await fetch(`${BASE_URL}/api/asistencia/categoria/${idCategoria}/stats`);
     const data = await res.json();
 
     document.getElementById("infoAsistenciaPromedio").innerText =
@@ -116,7 +118,7 @@ async function cargarEstadisticasCategoria() {
 ========================================== */
 async function cargarEventos() {
 
-    const res = await fetch(`http://localhost:3000/api/asistencia/categoria/eventos/${idCategoria}`);
+    const res = await fetch(`${BASE_URL}/api/asistencia/categoria/eventos/${idCategoria}`);
     const eventos = await res.json();
 
     document.getElementById("infoTotalEventos").innerText =
@@ -150,6 +152,8 @@ cargarEstadisticasCategoria();
 cargarEventos();
 
 </script>
+
+<script src="../js/config.js"></script>
 
 </body>
 </html>

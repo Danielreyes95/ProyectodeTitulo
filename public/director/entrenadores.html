@@ -45,7 +45,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-green-700">Listado de Entrenadores</h1>
 
-            <button onclick="mostrarModalCrear()" class="bg-green-700 text-white px-4 py-2 rounded shadow hover:bg-green-800">
+            <button onclick="mostrarModalCrear()" 
+                class="bg-green-700 text-white px-4 py-2 rounded shadow hover:bg-green-800">
                 + Agregar Entrenador
             </button>
         </div>
@@ -82,8 +83,10 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
         <input id="correoNuevo" class="w-full border p-2 rounded mb-3" placeholder="Correo">
         <input id="passwordNuevo" class="w-full border p-2 rounded mb-3" placeholder="Password">
 
-        <button onclick="crearEntrenador()" class="w-full bg-green-700 text-white py-2 rounded">Guardar</button>
-        <button onclick="ocultarModalCrear()" class="w-full mt-2 py-2 rounded bg-gray-300">Cancelar</button>
+        <button onclick="crearEntrenador()" 
+            class="w-full bg-green-700 text-white py-2 rounded">Guardar</button>
+        <button onclick="ocultarModalCrear()" 
+            class="w-full mt-2 py-2 rounded bg-gray-300">Cancelar</button>
     </div>
 </div>
 
@@ -97,52 +100,35 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
         <label class="font-semibold">Seleccionar nueva categoría</label>
         <select id="selectCategoria" class="w-full border p-2 rounded mb-3"></select>
 
-        <button onclick="guardarNuevaCategoria()" class="w-full bg-blue-600 text-white py-2 rounded">Guardar</button>
-        <button onclick="ocultarModalCategoria()" class="w-full mt-2 py-2 rounded bg-gray-300">Cancelar</button>
+        <button onclick="guardarNuevaCategoria()" 
+            class="w-full bg-blue-600 text-white py-2 rounded">Guardar</button>
+        <button onclick="ocultarModalCategoria()" 
+            class="w-full mt-2 py-2 rounded bg-gray-300">Cancelar</button>
     </div>
 </div>
 
-
+<script src="../js/config.js"></script>
 
 <script>
 let entrenadorSeleccionado = null;
 
-// ======================
-// LOGOUT
-// ======================
+/* ============= LOGOUT ============= */
 function logout() {
     localStorage.clear();
     window.location.href = "../index.html";
 }
 
-// ======================
-// MODAL CREAR
-// ======================
-function mostrarModalCrear() {
-    document.getElementById("modalCrear").classList.remove("hidden");
-}
+/* ============= MODALES ============= */
+function mostrarModalCrear() { document.getElementById("modalCrear").classList.remove("hidden"); }
+function ocultarModalCrear() { document.getElementById("modalCrear").classList.add("hidden"); }
 
-function ocultarModalCrear() {
-    document.getElementById("modalCrear").classList.add("hidden");
-}
+function mostrarModalCategoria() { document.getElementById("modalCategoria").classList.remove("hidden"); }
+function ocultarModalCategoria() { document.getElementById("modalCategoria").classList.add("hidden"); }
 
-// ======================
-// MODAL CATEGORÍA
-// ======================
-function mostrarModalCategoria() {
-    document.getElementById("modalCategoria").classList.remove("hidden");
-}
-
-function ocultarModalCategoria() {
-    document.getElementById("modalCategoria").classList.add("hidden");
-}
-
-// ======================
-// LISTAR ENTRENADORES
-// ======================
+/* ============= LISTAR ENTRENADORES ============= */
 async function cargarEntrenadores() {
     try {
-        const res = await fetch("http://localhost:3000/api/entrenadores/listar");
+        const res = await fetch(`${BASE_URL}/api/entrenadores/listar`);
         const entrenadores = await res.json();
 
         const tbody = document.getElementById("tbodyEntrenadores");
@@ -156,7 +142,6 @@ async function cargarEntrenadores() {
                     <td class="p-3">${e.telefono}</td>
                     <td class="p-3">${e.correo}</td>
                     <td class="p-3">${e.categoria?.nombre ?? "Sin categoría"}</td>
-
                     <td class="p-3">
                         <span class="px-2 py-1 rounded text-white 
                             ${e.estado === "activo" ? "bg-green-600" : "bg-red-600"}">
@@ -167,7 +152,7 @@ async function cargarEntrenadores() {
                     <td class="p-3 text-center flex gap-2 justify-center">
 
                         <button 
-                            onclick="cambiarEstado('${e._id}', '${e.estado}')"
+                            onclick="cambiarEstado('${e._id}')"
                             class="px-3 py-1 rounded text-white 
                             ${e.estado === 'activo' ? 'bg-red-600' : 'bg-green-600'}">
                             ${e.estado === "activo" ? "Deshabilitar" : "Habilitar"}
@@ -189,9 +174,7 @@ async function cargarEntrenadores() {
     }
 }
 
-// ======================
-// CREAR ENTRENADOR
-// ======================
+/* ============= CREAR ENTRENADOR ============= */
 async function crearEntrenador() {
     const nombre = document.getElementById("nombreNuevo").value;
     const rut = document.getElementById("rutNuevo").value;
@@ -199,7 +182,7 @@ async function crearEntrenador() {
     const correo = document.getElementById("correoNuevo").value;
     const password = document.getElementById("passwordNuevo").value;
 
-    await fetch("http://localhost:3000/api/entrenadores/crear", {
+    await fetch(`${BASE_URL}/api/entrenadores/crear`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ nombre, rut, telefono, correo, password })
@@ -209,27 +192,23 @@ async function crearEntrenador() {
     cargarEntrenadores();
 }
 
-// ======================
-// CAMBIAR ESTADO
-// ======================
+/* ============= CAMBIAR ESTADO ============= */
 async function cambiarEstado(id) {
     if (!confirm("¿Cambiar estado del entrenador?")) return;
 
-    await fetch(`http://localhost:3000/api/entrenadores/cambiar-estado/${id}`, {
+    await fetch(`${BASE_URL}/api/entrenadores/cambiar-estado/${id}`, {
         method: "PUT"
     });
 
     cargarEntrenadores();
 }
 
-// ======================
-// ABRIR MODAL CATEGORÍA
-// ======================
+/* ============= ABRIR MODAL CAMBIAR CATEGORÍA ============= */
 async function abrirModalCambiarCategoria(id) {
     entrenadorSeleccionado = id;
 
     try {
-        const res = await fetch("http://localhost:3000/api/categorias");
+        const res = await fetch(`${BASE_URL}/api/categorias`);
         const categorias = await res.json();
 
         const select = document.getElementById("selectCategoria");
@@ -251,13 +230,11 @@ async function abrirModalCambiarCategoria(id) {
     }
 }
 
-// ======================
-// GUARDAR CAMBIO DE CATEGORÍA
-// ======================
+/* ============= GUARDAR CAMBIO DE CATEGORÍA ============= */
 async function guardarNuevaCategoria() {
     const categoriaId = document.getElementById("selectCategoria").value;
 
-    await fetch("http://localhost:3000/api/entrenadores/cambiar-categoria", {
+    await fetch(`${BASE_URL}/api/entrenadores/cambiar-categoria`, {
         method: "PUT",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({

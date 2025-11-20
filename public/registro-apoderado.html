@@ -98,6 +98,7 @@
     </div>
   </div>
 
+  <script src="../js/config.js"></script>
 
   <!-- ===============================
         JS REGISTRO
@@ -117,7 +118,7 @@
         fechaNacimiento: document.getElementById("fechaNacimiento").value
       };
 
-      const res = await fetch("http://localhost:3000/api/apoderado/registrar", {
+      const res = await fetch(`${BASE_URL}/api/apoderado/registrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)

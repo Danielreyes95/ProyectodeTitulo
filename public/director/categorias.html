@@ -204,6 +204,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
     </div>
 </div>
 
+<script src="../js/config.js"></script>
+
 <script>
 function logout() {
     localStorage.clear();
@@ -217,10 +219,10 @@ let categoriaSeleccionada = null;
 ===================================================== */
 async function cargarCategorias() {
 
-    const catRes = await fetch("http://localhost:3000/api/categorias");
+    const catRes = await fetch(`${BASE_URL}/api/categorias`);
     const categorias = await catRes.json();
 
-    const jugadoresRes = await fetch("http://localhost:3000/api/jugadores/listar");
+    const jugadoresRes = await fetch(`${BASE_URL}/api/jugadores/listar`);
     const jugadores = await jugadoresRes.json();
 
     const lista = document.getElementById("listaCategorias");
@@ -257,7 +259,7 @@ async function verCategoria(idCategoria) {
         }
     });
 
-    const categoriaRes = await fetch(`http://localhost:3000/api/categorias/${idCategoria}`);
+    const categoriaRes = await fetch(`${BASE_URL}/api/categorias/${idCategoria}`);
     const categoria = await categoriaRes.json();
 
     document.getElementById("tituloCategoria").innerText = categoria.nombre;
@@ -273,7 +275,7 @@ async function verCategoria(idCategoria) {
     }
 
     // LISTAR JUGADORES
-    const jugadoresRes = await fetch("http://localhost:3000/api/jugadores/listar");
+    const jugadoresRes = await fetch(`${BASE_URL}/api/jugadores/listar`);
     const jugadores = await jugadoresRes.json();
 
     const jugadoresCat = jugadores.filter(j => j.categoria?._id === idCategoria);
@@ -284,7 +286,7 @@ async function verCategoria(idCategoria) {
         const edad = calcularEdad(j.fechaNacimiento);
 
         // Obtener estadísticas del jugador
-        const asRes = await fetch(`http://localhost:3000/api/asistencia/jugador/${j._id}/stats`);
+        const asRes = await fetch(`${BASE_URL}/api/asistencia/jugador/${j._id}/stats`);
         const stats = await asRes.json();
 
         tbody.innerHTML += `
@@ -312,7 +314,7 @@ async function verCategoria(idCategoria) {
     document.getElementById("bloqueEstadisticas").classList.remove("hidden");
     document.getElementById("bloqueJugadores").classList.remove("hidden");
 
-    const asRes = await fetch(`http://localhost:3000/api/asistencia/categoria/${idCategoria}/stats`);
+    const asRes = await fetch(`${BASE_URL}/api/asistencia/categoria/${idCategoria}/stats`);
     const asData = await asRes.json();
 
     const activos = jugadoresCat.filter(j => j.estado === "activo").length;
@@ -380,7 +382,7 @@ function cerrarModalCategoria() {
    CARGAR ENTRENADORES DISPONIBLES
 ===================================================== */
 async function cargarEntrenadoresDisponibles() {
-    const res = await fetch("http://localhost:3000/api/categorias/entrenadores/disponibles");
+    const res = await fetch(`${BASE_URL}/api/categorias/entrenadores/disponibles`);
     const entrenadores = await res.json();
 
     const select = document.getElementById("categoriaEntrenador");
@@ -398,7 +400,7 @@ async function cargarEntrenadoresDisponibles() {
 ===================================================== */
 async function cargarDatosEditar(idCat) {
 
-    const res = await fetch(`http://localhost:3000/api/categorias/${idCat}`);
+    const res = await fetch(`${BASE_URL}/api/categorias/${idCat}`);
     const c = await res.json();
 
     document.getElementById("tituloModalCategoria").innerText = "Editar Categoría";
@@ -427,11 +429,11 @@ async function guardarCategoria() {
 
     const body = { nombre, edadMin, edadMax, entrenador };
 
-    let url = "http://localhost:3000/api/categorias/crear";
+    let url = `${BASE_URL}/api/categorias/crear`;
     let method = "POST";
 
     if (id) {
-        url = `http://localhost:3000/api/categorias/${id}/editar`;
+        url =  `${BASE_URL}/api/categorias/${id}/editar`;
         method = "PUT";
     }
 
@@ -471,7 +473,7 @@ async function confirmarEliminarCategoria() {
 
     if (!categoriaSeleccionada) return;
 
-    const res = await fetch(`http://localhost:3000/api/categorias/${categoriaSeleccionada}/eliminar`, {
+    const res = await fetch(`${BASE_URL}/api/categorias/${categoriaSeleccionada}/eliminar`, {
         method: "DELETE"
     });
 
@@ -491,7 +493,7 @@ async function confirmarEliminarCategoria() {
     document.getElementById("tituloCategoria").innerText = "Selecciona una categoría";
     document.getElementById("accionesCategoria").classList.add("hidden");
     document.getElementById("bloqueEntrenador").classList.add("hidden");
-    document.getElementById("bloqueEstadísticas").classList.add("hidden");
+    document.getElementById("bloqueEstadisticas").classList.add("hidden");
     document.getElementById("bloqueJugadores").classList.add("hidden");
 
     cargarCategorias();

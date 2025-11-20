@@ -49,6 +49,8 @@
 
 </div>
 
+<script src="../js/config.js"></script>
+
 <script>
 
 const idJugador = localStorage.getItem("pagoJugador");
@@ -70,7 +72,7 @@ function formatoCLP(monto) {
    Cargar datos del jugador
 ================================ */
 async function cargarJugador() {
-    const res = await fetch(`http://localhost:3000/api/jugadores/${idJugador}`);
+    const res = await fetch(`${BASE_URL}/api/jugadores/${idJugador}`);
     const j = await res.json();
 
     document.getElementById("tituloJugador").innerText = `Historial de Pago de ${j.nombre}`;
@@ -84,7 +86,7 @@ async function cargarJugador() {
 ================================ */
 async function cargarHistorial() {
 
-    const res = await fetch(`http://localhost:3000/api/pagos/historial/${idJugador}`);
+    const res = await fetch(`${BASE_URL}/api/pagos/historial/${idJugador}`);
     const data = await res.json();
 
     const tbody = document.getElementById("tbodyHistorial");

@@ -19,6 +19,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
 }
 </script>
 
+<script src="../js/config.js"></script>
+
 <div class="flex">
 
     <!-- SIDEBAR -->
@@ -114,12 +116,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         // 1️⃣ Obtener categoría (para nombre)
-        const respCat = await fetch(`http://localhost:3000/api/categorias/${categoriaId}`);
+        const respCat = await fetch(`${BASE_URL}/api/categorias/${categoriaId}`);
         const categoria = await respCat.json();
         document.getElementById("nombreCategoria").textContent = categoria.nombre;
 
         // 2️⃣ Obtener jugadores
-        const resp = await fetch(`http://localhost:3000/api/jugadores/categoria/${categoriaId}`);
+        const resp = await fetch(`${BASE_URL}/api/jugadores/categoria/${categoriaId}`);
         const jugadores = await resp.json();
 
         if (!Array.isArray(jugadores)) throw new Error();
@@ -144,7 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("edadPromedio").textContent = promEdad;
 
         // 3️⃣ Obtener todos los eventos con asistencia
-        const eventos = await fetch(`http://localhost:3000/api/evento/categoria/${categoriaId}`)
+        const eventos = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`)
             .then(r => r.json());
 
         let totalAsistencias = 0;

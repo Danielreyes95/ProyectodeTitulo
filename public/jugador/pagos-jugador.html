@@ -9,12 +9,15 @@
 
 <body class="bg-gray-100">
 
-<!-- VALIDACIÓN -->
+<!-- 🔐 VALIDACIÓN -->
 <script>
 if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado") {
     window.location.href = "../index.html";
 }
 </script>
+
+<!-- 🔥 CONFIG GLOBAL -->
+<script src="../js/config.js"></script>
 
 <div class="p-8 max-w-5xl mx-auto">
 
@@ -49,7 +52,6 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
         <p id="msgPago" class="mt-3 font-semibold"></p>
     </div>
 
-
     <!-- =============================================
          HISTORIAL DE PAGOS
     =============================================== -->
@@ -77,20 +79,19 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
 const idJugador = localStorage.getItem("idJugador");
 document.getElementById("nombreJugador").innerText = localStorage.getItem("nombreJugador");
 document.getElementById("rutJugador").innerText = localStorage.getItem("rutJugador");
-document.getElementById("categoriaJugador").innerText = localStorage.getItem("categoriaJugadorNombre");
+document.getElementById("categoriaJugador").innerText = localStorage.getItem("categoriaNombreJugador");
 
 
 // =====================================================
 // CARGAR MESES DISPONIBLES PARA PAGO
 // =====================================================
 async function cargarMeses() {
-    const res = await fetch(`http://localhost:3000/api/pagos/meses/${idJugador}`);
+    const res = await fetch(`${BASE_URL}/api/pagos/meses/${idJugador}`);
     const data = await res.json();
 
     const sel = document.getElementById("mesPagar");
     sel.innerHTML = "";
 
-    // solo meses pendientes
     data.meses.forEach(m => {
         if (!m.pagado) {
             sel.innerHTML += `<option value="${m.mes} ${m.anio}">${m.mes} ${m.anio}</option>`;
@@ -109,7 +110,7 @@ async function cargarMeses() {
 async function pagarMensualidad() {
     const mesCompleto = document.getElementById("mesPagar").value;
 
-    const res = await fetch("http://localhost:3000/api/pagos/registrar", {
+    const res = await fetch(`${BASE_URL}/api/pagos/registrar`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -118,7 +119,7 @@ async function pagarMensualidad() {
         body: JSON.stringify({
             jugadorId: idJugador,
             mes: mesCompleto,
-            monto: 25000,          // ← PUEDES CAMBIARLO A TU VALOR REAL
+            monto: 25000,
             metodoPago: "App",
             observacion: ""
         })
@@ -140,18 +141,15 @@ async function pagarMensualidad() {
 
 
 // =====================================================
-// HISTORIAL COMPLETO (pendientes + pagados)
+// HISTORIAL COMPLETO
 // =====================================================
 async function cargarPagos() {
-    // Obtener meses desde creación
-    const mesesRes = await fetch(`http://localhost:3000/api/pagos/meses/${idJugador}`);
+    const mesesRes = await fetch(`${BASE_URL}/api/pagos/meses/${idJugador}`);
     const mesesData = await mesesRes.json();
 
-    // Obtener pagos reales
-    const pagosRes = await fetch(`http://localhost:3000/api/pagos/jugador/${idJugador}`);
+    const pagosRes = await fetch(`${BASE_URL}/api/pagos/jugador/${idJugador}`);
     const pagosData = await pagosRes.json();
 
-    // 🔥 CORRECCIÓN AQUÍ
     const pagos = Array.isArray(pagosData) ? pagosData : [];
 
     const meses = mesesData.meses || [];
@@ -175,8 +173,9 @@ async function cargarPagos() {
     });
 }
 
+
 // =====================================================
-// INICIALIZAR
+// INICIALIZACIÓN
 // =====================================================
 cargarMeses();
 cargarPagos();

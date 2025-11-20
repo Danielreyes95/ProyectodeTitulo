@@ -9,6 +9,8 @@
 
 <body class="bg-gray-100">
 
+<script src="../js/config.js"></script>
+
 <script>
 // Validación acceso
 if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
@@ -123,7 +125,7 @@ async function crearEvento() {
         return;
     }
 
-    const res = await fetch("http://localhost:3000/api/evento/crear", {
+    const res = await fetch(`${BASE_URL}/api/evento/crear`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -175,7 +177,7 @@ function obtenerEstadoVisual(fechaStr) {
    3. CARGAR EVENTOS (PROGRAMADOS Y ANTERIORES)
 ====================================================== */
 async function cargarEventos() {
-    const res = await fetch(`http://localhost:3000/api/evento/categoria/${categoriaId}`);
+    const res = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`);
     const eventos = await res.json();
 
     const tbodyProgramados = document.getElementById("tbodyProgramados");
@@ -265,7 +267,7 @@ function verEvento(id) {
 async function eliminarEvento(id) {
     if (!confirm("¿Eliminar este evento?")) return;
 
-    const res = await fetch(`http://localhost:3000/api/evento/${id}`, {
+    const res = await fetch(`${BASE_URL}/api/evento/${id}`, {
         method: "DELETE"
     });
 

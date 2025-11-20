@@ -16,6 +16,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
 }
 </script>
 
+<script src="../js/config.js"></script>
+
 <div class="p-6 max-w-5xl mx-auto">
 
     <button onclick="window.location.href='./jugador.html'" 
@@ -59,7 +61,7 @@ const categoriaNombre = localStorage.getItem("categoriaNombreJugador");
 ============================================================ */
 async function cargarCategoria() {
 
-    const res = await fetch(`http://localhost:3000/api/categoria/${categoriaId}`);
+    const res = await fetch(`${BASE_URL}/api/categoria/${categoriaId}`);
     const data = await res.json();
 
     document.getElementById("infoCategoria").innerHTML = `
@@ -75,7 +77,7 @@ async function cargarCategoria() {
 ============================================================ */
 async function cargarJugadores() {
 
-    const res = await fetch(`http://localhost:3000/api/jugador/categoria/${categoriaId}`);
+    const res = await fetch(`${BASE_URL}/api/jugadores/categoria/${categoriaId}`);
     const jugadores = await res.json();
 
     const tbody = document.getElementById("listaJugadores");

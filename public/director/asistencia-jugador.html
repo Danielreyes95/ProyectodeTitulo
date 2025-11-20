@@ -99,6 +99,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
     </main>
 </div>
 
+<script src="../js/config.js"></script>
+
 <script>
 
 function logout() {
@@ -117,7 +119,7 @@ if (!idJugador) {
 ====================================================== */
 async function cargarJugador() {
 
-    const res = await fetch(`http://localhost:3000/api/jugadores/${idJugador}`);
+    const res = await fetch(`${BASE_URL}/api/jugadores/${idJugador}`);
     const jugador = await res.json();
 
     document.getElementById("tituloJugador").innerText =
@@ -149,7 +151,7 @@ function volverCategoria() {
 ====================================================== */
 async function cargarEstadisticas() {
 
-    const res = await fetch(`http://localhost:3000/api/asistencia/jugador/${idJugador}/stats`);
+    const res = await fetch(`${BASE_URL}/api/asistencia/jugador/${idJugador}/stats`);
     const data = await res.json();
 
     document.getElementById("statTotal").innerText = data.total;
@@ -163,7 +165,7 @@ async function cargarEstadisticas() {
 ====================================================== */
 async function cargarDetalle() {
 
-    const res = await fetch(`http://localhost:3000/api/asistencia/jugador/detalle/${idJugador}`);
+    const res = await fetch(`${BASE_URL}/api/asistencia/jugador/detalle/${idJugador}`);
     const registros = await res.json();
 
     const tbody = document.getElementById("tbodyDetalle");

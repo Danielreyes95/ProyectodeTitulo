@@ -113,6 +113,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
 <!-- 🔔 Notificación flotante -->
 <div id="toastAviso"></div>
 
+<script src="../js/config.js"></script>
+
 <!-- Socket.io -->
 <script src="/socket.io/socket.io.js"></script>
 
@@ -120,7 +122,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
 /* ============================================================
    SOCKET.IO con autenticación
 ============================================================ */
-const socket = io({
+const socket = io(BASE_URL,{
     auth: {
         userId: localStorage.getItem("userId"),
         rol: localStorage.getItem("rol")

@@ -25,6 +25,9 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
 }
 </script>
 
+<!-- ⚠️ IMPORTANTE PARA PRODUCCIÓN -->
+<script src="../js/config.js"></script>
+
 <div class="p-6 max-w-4xl mx-auto">
 
     <button onclick="window.location.href='./jugador.html'" 
@@ -48,7 +51,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
 
 <script>
 const idJugador = localStorage.getItem("idJugador");
-const categoriaJugador = localStorage.getItem("categoriaJugador"); // es el ID
+const categoriaJugador = localStorage.getItem("categoriaJugador"); // ID categoría
 const nombreJugador = localStorage.getItem("nombreJugador");
 const categoriaNombreJugador = localStorage.getItem("categoriaNombreJugador");
 
@@ -63,7 +66,7 @@ async function cargarEventos() {
     cont.innerHTML = `<p class="text-gray-500">Cargando eventos...</p>`;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/evento/categoria/${categoriaJugador}`);
+        const res = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaJugador}`);
         const eventos = await res.json();
 
         cont.innerHTML = "";
@@ -78,8 +81,7 @@ async function cargarEventos() {
         eventos.forEach(ev => {
             const fecha = new Date(ev.fecha);
             const fechaTxt = fecha.toLocaleDateString("es-CL");
-
-            const esFuturo = fecha >= hoy;
+            const esFuturo = fecha >= new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
 
             const estadoAsistencia = ev.porcentajeAsistencia > 0
                 ? `<span class="tag bg-green-100 text-green-700">${ev.porcentajeAsistencia}% asistencia</span>`
@@ -147,7 +149,7 @@ async function confirmarAsistencia(eventoId) {
     if (!confirmar) return;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/evento/${eventoId}/asistencia/${idJugador}`, {
+        const res = await fetch(`${BASE_URL}/api/evento/${eventoId}/asistencia/${idJugador}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

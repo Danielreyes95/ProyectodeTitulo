@@ -16,6 +16,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
 }
 </script>
 
+<script src="../js/config.js"></script>
+
 <div class="flex">
 
     <!-- SIDEBAR -->
@@ -228,7 +230,7 @@ async function cargarTodo() {
    1) EVENTOS DE LA CATEGORÍA
 =========================================== */
 async function cargarEventosCategoria() {
-    const res = await fetch(`http://localhost:3000/api/evento/categoria/${categoriaId}`);
+    const res = await fetch(`${BASE_URL}/api/evento/categoria/${categoriaId}`);
     eventosCategoria = await res.json();
 }
 
@@ -237,13 +239,13 @@ async function cargarEventosCategoria() {
 =========================================== */
 async function cargarJugadoresYStats() {
     // Jugadores de la categoría
-    const resJug = await fetch(`http://localhost:3000/api/jugadores/categoria/${categoriaId}`);
+    const resJug = await fetch(`${BASE_URL}/api/jugadores/categoria/${categoriaId}`);
     jugadores = await resJug.json();
 
     // Por cada jugador, obtener sus estadísticas
     statsPorJugador = {};
     for (const j of jugadores) {
-        const resStats = await fetch(`http://localhost:3000/api/evento/jugador/${j._id}/stats`);
+        const resStats = await fetch(`${BASE_URL}/api/evento/jugador/${j._id}/stats`);
         const stats = await resStats.json();
         statsPorJugador[j._id] = stats;
     }
@@ -400,7 +402,7 @@ async function toggleDetalleJugador(jugadorId) {
         filaDetalle.classList.remove("hidden");
 
         if (!cont.dataset.cargado) {
-            const res = await fetch(`http://localhost:3000/api/evento/jugador/${jugadorId}`);
+            const res = await fetch(`${BASE_URL}/api/evento/jugador/${jugadorId}`);
             const registros = await res.json();
 
             if (!Array.isArray(registros) || registros.length === 0) {

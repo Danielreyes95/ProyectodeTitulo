@@ -16,6 +16,8 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
 }
 </script>
 
+<script src="../js/config.js"></script>
+
 <div class="p-6 max-w-3xl mx-auto">
 
     <button onclick="window.location.href='./eventos-jugador.html'" 
@@ -50,7 +52,7 @@ const jugadorId = localStorage.getItem("idJugador");
 ============================================================ */
 async function cargarEvento() {
 
-    const res = await fetch(`http://localhost:3000/api/evento/${eventoId}`);
+    const res = await fetch(`${BASE_URL}/api/evento/${eventoId}`);
     const data = await res.json();
 
     const e = data.evento;
@@ -79,7 +81,7 @@ async function cargarEvento() {
 }
 
 /* ============================================================
-   Mostrar detalle del jugador en el evento
+   Mostrar detalle del jugador
 ============================================================ */
 function mostrarDetalleJugador(reg) {
 
@@ -95,13 +97,11 @@ function mostrarDetalleJugador(reg) {
                 ${presenteHTML}
             </div>
 
-            ${
-                !reg.presente && reg.motivoInasistencia
-                ? `<div>
-                     <p class="font-semibold">Motivo de Inasistencia:</p>
-                     <p class="text-gray-700">${reg.motivoInasistencia}</p>
-                   </div>`
-                : ""
+            ${!reg.presente && reg.motivoInasistencia ? `
+                <div>
+                    <p class="font-semibold">Motivo de Inasistencia:</p>
+                    <p class="text-gray-700">${reg.motivoInasistencia}</p>
+                </div>` : ""
             }
 
             <div>
@@ -122,13 +122,8 @@ function mostrarDetalleJugador(reg) {
 
                 <p><strong>Faltas recibidas:</strong> ${reg.faltasRecibidas}</p>
 
-                <p><strong>Tarjetas amarillas:</strong> 
-                    ${reg.amarilla ? "✔" : "0"}
-                </p>
-
-                <p><strong>Tarjetas rojas:</strong> 
-                    ${reg.roja ? "✔" : "0"}
-                </p>
+                <p><strong>Tarjetas amarillas:</strong> ${reg.amarilla ? "✔" : "0"}</p>
+                <p><strong>Tarjetas rojas:</strong> ${reg.roja ? "✔" : "0"}</p>
 
                 <p><strong>Nota de rendimiento:</strong> 
                     ${reg.rendimiento ?? "No asignada"}

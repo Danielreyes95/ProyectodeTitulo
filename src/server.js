@@ -28,13 +28,16 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 
-// 👉 Hacer io disponible globalmente para los controladores
 global.io = io;
 
 // =============================
 // MIDDLEWARES
 // =============================
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // =============================
@@ -68,11 +71,7 @@ io.on("connection", (socket) => {
     if (!userId || !rol) return;
 
     console.log(`🔵 Usuario conectado: ${userId} (${rol})`);
-
-    // SALA según rol
     socket.join(rol);
-
-    // SALA personal (para avisos específicos)
     socket.join(`user:${userId}`);
 
     socket.on("disconnect", () => {
@@ -85,5 +84,5 @@ io.on("connection", (socket) => {
 // =============================
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`🚀 Servidor funcionando en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor funcionando en el puerto ${PORT}`);
 });

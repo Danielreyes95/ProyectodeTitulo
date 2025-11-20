@@ -111,6 +111,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
     </div>
 </div>
 
+<script src="../js/config.js"></script>
 
 <script>
 // ===========================
@@ -135,7 +136,7 @@ let jugadoresOriginal = [];
 // ===========================
 async function cargarJugadores() {
     try {
-        const res = await fetch("http://localhost:3000/api/jugadores/listar");
+        const res = await fetch(`${BASE_URL}/api/jugadores/listar`);
 
         if (!res.ok) throw new Error("Error al obtener jugadores");
 
@@ -193,7 +194,7 @@ async function cambiarEstado(id, estadoActual) {
     if (!confirmar) return;
 
     try {
-        const res = await fetch(`http://localhost:3000/api/jugadores/cambiar-estado/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/jugadores/cambiar-estado/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" }
         });
@@ -224,7 +225,7 @@ async function registrarJugador() {
         fechaNacimiento: document.getElementById("fechaNacimientoJugador").value
     };
 
-    const res = await fetch("http://localhost:3000/api/jugadores/registrar", {
+    const res = await fetch(`${BASE_URL}/api/jugadores/registrar`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
