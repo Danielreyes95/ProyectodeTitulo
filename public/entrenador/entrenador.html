@@ -10,61 +10,81 @@
     <!-- CSS global -->
     <link rel="stylesheet" href="../assets/css/styles.css" />
     <link rel="stylesheet" href="../assets/css/responsive.css" />
+
+    <style>
+        .card-dashboard {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            transition: 0.2s ease;
+            display: block;
+        }
+        .card-dashboard:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .card-sub {
+            font-size: .9rem;
+            color: #555;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
 
-<!-- VALIDACIÓN -->
+<!-- ================================
+     VALIDACIÓN
+================================ -->
 <script>
 if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenador") {
     window.location.href = "../index.html";
 }
 </script>
 
-<!-- SIDEBAR DINÁMICO -->
-<div id="sidebarContainer"></div>
-<script src="../js/loadSidebar.js"></script>
-
 <!-- ================================
        CONTENIDO PRINCIPAL
 ================================ -->
-<main class="p-6 sm:p-10 md:ml-60 min-h-screen relative flex flex-col">
+<main class="p-6 sm:p-10 min-h-screen relative flex flex-col">
 
     <!-- TÍTULO -->
     <h1 class="text-2xl sm:text-3xl font-bold text-green-700">Bienvenido, Entrenador</h1>
     <p class="text-gray-600 mb-10">Panel de control de tu categoría.</p>
 
-    <!-- ======================================
-         ACCESOS RÁPIDOS
-    ======================================= -->
+    <!-- ACCESOS RÁPIDOS -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 z-10">
 
         <a href="./miCategoria.html"
-           class="card-dashboard border-l-8 border-green-600">
+            class="card-dashboard border-l-8 border-green-600">
             <p class="card-title text-green-700">Mi Categoría</p>
             <p class="card-sub">Jugadores asignados</p>
         </a>
 
         <a href="./asistencia.html"
-           class="card-dashboard border-l-8 border-blue-600">
+            class="card-dashboard border-l-8 border-blue-600">
             <p class="card-title text-blue-700">Asistencia</p>
             <p class="card-sub">Registro y control</p>
         </a>
 
         <a href="./observaciones.html"
-           class="card-dashboard border-l-8 border-amber-600">
+            class="card-dashboard border-l-8 border-amber-600">
             <p class="card-title text-amber-700">Observaciones</p>
             <p class="card-sub">Notas individuales</p>
         </a>
 
         <a href="./estadisticas.html"
-           class="card-dashboard border-l-8 border-purple-600">
+            class="card-dashboard border-l-8 border-purple-600">
             <p class="card-title text-purple-700">Rendimiento</p>
             <p class="card-sub">Goles · Asistencias · Tarjetas</p>
         </a>
 
         <a href="./avisos-entrenador.html"
-           class="card-dashboard border-l-8 border-red-600">
+            class="card-dashboard border-l-8 border-red-600">
             <p class="card-title text-red-700">Enviar Avisos</p>
             <p class="card-sub">A apoderados de tu categoría</p>
         </a>
@@ -74,7 +94,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
     <!-- BOTÓN LOGOUT -->
     <div class="mt-10 z-10">
         <button onclick="logout()"
-                class="btn bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded shadow">
+                class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded shadow">
             Cerrar sesión
         </button>
     </div>

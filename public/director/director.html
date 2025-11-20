@@ -27,7 +27,6 @@
             z-index: 9999;
         }
 
-        /* Tarjetas acceso rápido */
         .card-acceso {
             display: block;
             background: white;
@@ -68,35 +67,9 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
 </script>
 
 <!-- =============================
-        SIDEBAR + MENU
-============================= -->
-
-<!-- BOTÓN MENÚ (MÓVIL) -->
-<button id="btnMenu"
-    class="md:hidden fixed top-4 left-4 bg-green-700 text-white p-2 rounded shadow z-50">
-    ☰
-</button>
-
-<!-- SIDEBAR DINÁMICO -->
-<div id="sidebarContainer"></div>
-
-<script src="../js/loadSidebar.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btnMenu");
-
-    btn.addEventListener("click", () => {
-        const sidebar = document.querySelector("#sidebar");
-        if (sidebar) sidebar.classList.toggle("active");
-    });
-});
-</script>
-
-<!-- =============================
         CONTENIDO PRINCIPAL
 ============================= -->
-<main class="flex-1 p-6 md:p-10 md:ml-60 relative">
+<main class="flex-1 p-6 md:p-10 relative">
 
     <h1 class="text-3xl font-bold text-green-700">Bienvenido, Director</h1>
     <p class="text-gray-600 mb-10">Panel de administración general.</p>
@@ -104,38 +77,32 @@ document.addEventListener("DOMContentLoaded", () => {
     <!-- ACCESOS RÁPIDOS -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-        <a href="./jugadores.html"
-           class="card-acceso border-green-600">
+        <a href="./jugadores.html" class="card-acceso border-green-600">
             <p class="titulo-acceso text-green-700">Jugadores</p>
             <p class="sub-acceso">Administrar jugadores</p>
         </a>
 
-        <a href="./entrenadores.html"
-           class="card-acceso border-blue-600">
+        <a href="./entrenadores.html" class="card-acceso border-blue-600">
             <p class="titulo-acceso text-blue-700">Entrenadores</p>
             <p class="sub-acceso">Gestión completa</p>
         </a>
 
-        <a href="./categorias.html"
-           class="card-acceso border-amber-600">
+        <a href="./categorias.html" class="card-acceso border-amber-600">
             <p class="titulo-acceso text-amber-700">Categorías</p>
             <p class="sub-acceso">Clasificación por edad</p>
         </a>
 
-        <a href="./pagos.html"
-           class="card-acceso border-yellow-500">
+        <a href="./pagos.html" class="card-acceso border-yellow-500">
             <p class="titulo-acceso text-yellow-600">Pagos</p>
             <p class="sub-acceso">Control de mensualidades</p>
         </a>
 
-        <a href="./avisos.html"
-           class="card-acceso border-red-600">
+        <a href="./avisos.html" class="card-acceso border-red-600">
             <p class="titulo-acceso text-red-700">Avisos</p>
             <p class="sub-acceso">Comunicados del sistema</p>
         </a>
 
-        <a href="./reportes.html"
-           class="card-acceso border-purple-600">
+        <a href="./reportes.html" class="card-acceso border-purple-600">
             <p class="titulo-acceso text-purple-700">Reportes</p>
             <p class="sub-acceso">Informes detallados</p>
         </a>
