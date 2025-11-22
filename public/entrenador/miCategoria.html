@@ -27,11 +27,13 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
     <aside class="w-64 bg-green-700 text-white min-h-screen p-5 flex flex-col gap-4">
         <h2 class="text-2xl font-bold text-center mb-6">Entrenador</h2>
 
-        <a href="./entrenador.html" class="hover:underline">Inicio</a>
-        <a href="./miCategoria.html" class="font-bold underline">Mi Categoria</a>
-        <a href="./asistencia.html" class="hover:underline">Asistencia</a>
-        <a href="./rendimiento.html" class="hover:underline">Rendimiento</a>
-        <a href="./avisos-entrenador.html" class="hover:underline">Avisos</a>
+        <a href="./entrenador.html">Inicio</a>
+        <a href="./miCategoria.html"class="font-bold underline">Mi Categoría</a>
+        <a href="./asistencia-jugadores.html">Asistencia</a>
+        <a href="./rendimiento.html">Rendimiento</a>
+        <a href="./eventos.html">Eventos</a>
+        <a href="./avisos-entrenador.html">Avisos</a>
+        <a href="./reportes-entrenador.html">Reportes</a>
 
         <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
             Cerrar sesión
@@ -163,8 +165,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         eventos.forEach(e => {
             if (!e.asistencia) return;
 
-            e.asistencia.forEach(reg => {
-                const id = reg.jugador;
+                e.asistencia.forEach(reg => {
+                    const id = (typeof reg.jugador === "object")
+                    ? reg.jugador._id
+                    : reg.jugador;
+
+                // Si el jugador no está en el mapa, saltar
+                if (!mapaJugador[id]) return;
+
                 mapaJugador[id].total++;
                 totalPosibles++;
 

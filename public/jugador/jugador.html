@@ -44,6 +44,13 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "apoderado
             <p class="text-gray-500 text-sm">Ver eventos y confirmar asistencia</p>
         </a>
 
+        <a href="./mi-categoria.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-purple-500
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-purple-700">Mi Categoría</p>
+            <p class="text-gray-500 text-sm">Ver profesor y compañeros de equipo</p>
+        </a>
+
         <a href="./rendimiento-jugador.html"
            class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-green-600
                   hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
@@ -97,47 +104,68 @@ document.getElementById("nombreJugador").innerText = localStorage.getItem("nombr
 document.getElementById("rutJugador").innerText = localStorage.getItem("rutJugador");
 document.getElementById("categoriaJugador").innerText = localStorage.getItem("categoriaNombreJugador");
 
-// CARGAR PRÓXIMO EVENTO
+// ✅ CARGAR PRÓXIMO EVENTO
 async function cargarProximoEvento() {
-    const catId = localStorage.getItem("categoriaJugador");
-
-    const res = await fetch(`${BASE_URL}/api/evento/categoria/${catId}`);
-    const eventos = await res.json();
-
     const cont = document.getElementById("proximoEvento");
 
-    if (!Array.isArray(eventos) || eventos.length === 0) {
-        cont.innerHTML = "<p>No hay eventos programados.</p>";
+    // 👇 usar el ID real de la categoría, no el nombre
+    const catId = localStorage.getItem("categoriaIdJugador");
+
+    if (!catId) {
+        cont.innerHTML = "<p>No se encontró la categoría del jugador.</p>";
+        console.warn("No hay categoriaIdJugador en localStorage");
         return;
     }
 
-    const hoy = new Date();
-    const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+    try {
+        // Si tu ruta es /api/evento/categoria deja 'evento', si es /api/eventos/categoria cambia acá
+        const res = await fetch(`${BASE_URL}/api/evento/categoria/${catId}`);
+        const eventos = await res.json();
 
-    const futuros = eventos
-        .filter(e => new Date(e.fecha) >= hoySinHora)
-        .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        console.log("Eventos recibidos para Próximo Evento:", eventos);
 
-    if (futuros.length === 0) {
-        cont.innerHTML = "<p>No hay eventos futuros.</p>";
-        return;
+        if (!Array.isArray(eventos) || eventos.length === 0) {
+            cont.innerHTML = "<p>No hay eventos programados.</p>";
+            return;
+        }
+
+        const hoy = new Date();
+        const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+
+        // 👇 usar fechaEvento y tipoEvento del schema
+        const futuros = eventos
+            .filter(e => e.fechaEvento && new Date(e.fechaEvento) >= hoySinHora)
+            .sort((a, b) => new Date(a.fechaEvento) - new Date(b.fechaEvento));
+
+        if (futuros.length === 0) {
+            cont.innerHTML = "<p>No hay eventos futuros.</p>";
+            return;
+        }
+
+        const ev = futuros[0];
+        const fecha = new Date(ev.fechaEvento).toLocaleDateString("es-CL", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long"
+        });
+
+        cont.innerHTML = `
+            <p><b>Fecha:</b> ${fecha}</p>
+            <p><b>Tipo:</b> ${ev.tipoEvento || "-"}</p>
+            ${ev.lugar ? `<p><b>Lugar:</b> ${ev.lugar}</p>` : ""}
+            <button onclick="verEvento('${ev._id}')" 
+                class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                Ver evento
+            </button>`;
+    } catch (error) {
+        console.error("Error cargando próximo evento:", error);
+        cont.innerHTML = "<p>Error al cargar los eventos.</p>";
     }
-
-    const ev = futuros[0];
-    const fecha = new Date(ev.fecha).toLocaleDateString("es-CL");
-
-    cont.innerHTML = `
-        <p><b>Fecha:</b> ${fecha}</p>
-        <p><b>Tipo:</b> ${ev.tipo}</p>
-        <button onclick="verEvento('${ev._id}')" 
-            class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-            Ver evento
-        </button>`;
 }
 
 function verEvento(id) {
     localStorage.setItem("eventoSeleccionado", id);
-    window.location.href = "./ver-evento-jugador.html";
+    window.location.href = "./eventos-jugador.html";
 }
 
 cargarProximoEvento();

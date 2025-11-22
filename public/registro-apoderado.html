@@ -32,7 +32,7 @@
     </p>
 
     <!-- FORM -->
-    <form id="formRegistro" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form id="formRegistro" class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="crearCuenta(); return false;">
 
       <!-- ======================================
             COLUMNA 1 – DATOS APODERADO
@@ -53,6 +53,7 @@
           placeholder="Teléfono" required>
 
         <input id="correoApoderado" 
+          type="email"
           class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-amber-600" 
           placeholder="Correo electrónico" required>
 
@@ -105,36 +106,57 @@
   ================================ -->
   <script>
     async function crearCuenta() {
-
       const data = {
-        rutApoderado: document.getElementById("rutApoderado").value,
-        nombreApoderado: document.getElementById("nombreApoderado").value,
-        telefono: document.getElementById("telefonoApoderado").value,
-        correo: document.getElementById("correoApoderado").value,
-        password: document.getElementById("passwordApoderado").value,
+        rutApoderado: document.getElementById("rutApoderado").value.trim(),
+        nombreApoderado: document.getElementById("nombreApoderado").value.trim(),
+        telefono: document.getElementById("telefonoApoderado").value.trim(),
+        correo: document.getElementById("correoApoderado").value.trim(),
+        // 👇 nombre correcto que espera auth.controller.registroApoderado
+        passwordApoderado: document.getElementById("passwordApoderado").value.trim(),
 
-        rutJugador: document.getElementById("rutJugador").value,
-        nombreJugador: document.getElementById("nombreJugador").value,
+        rutJugador: document.getElementById("rutJugador").value.trim(),
+        nombreJugador: document.getElementById("nombreJugador").value.trim(),
         fechaNacimiento: document.getElementById("fechaNacimiento").value
       };
 
-      const res = await fetch(`${BASE_URL}/api/apoderado/registrar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      const respuesta = await res.json();
-
-      if (respuesta.error) {
-        alert(respuesta.error);
+      // Validación básica en front
+      if (
+        !data.rutApoderado || !data.nombreApoderado || !data.telefono ||
+        !data.correo || !data.passwordApoderado ||
+        !data.rutJugador || !data.nombreJugador || !data.fechaNacimiento
+      ) {
+        alert("Todos los campos son obligatorios.");
         return;
       }
 
-      // 🔥 REGISTRO EXITOSO → REDIRECCIÓN AUTOMÁTICA
-      alert("Cuenta creada correctamente. Ahora puedes iniciar sesión.");
-      window.location.href = "index.html";   // ← vuelve al Login
+      try {
+        const res = await fetch(`${BASE_URL}/api/auth/registro-apoderado`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
 
+        let respuesta;
+        try {
+          respuesta = await res.json();
+        } catch (e) {
+          console.error("Respuesta no JSON:", e);
+          alert("Respuesta inesperada del servidor.");
+          return;
+        }
+
+        if (!res.ok || respuesta.error) {
+          alert(respuesta.error || "Error al registrar la cuenta.");
+          return;
+        }
+
+        alert("Cuenta creada correctamente. Ahora puedes iniciar sesión.");
+        window.location.href = "index.html";
+
+      } catch (error) {
+        console.error(error);
+        alert("Error al conectar con el servidor.");
+      }
     }
   </script>
 

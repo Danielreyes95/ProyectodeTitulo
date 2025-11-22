@@ -230,7 +230,7 @@ exports.rendimientoCategoria = async (req, res) => {
     // 1. Jugadores de la categoría
     const jugadores = await Jugador.find({ categoria: categoriaId });
 
-    // 2. Eventos de la categoría
+    // 2. Eventos reales de la categoría (IMPORTANTE)
     const eventos = await Evento.find({ categoria: categoriaId });
 
     let resultado = [];
@@ -251,10 +251,13 @@ exports.rendimientoCategoria = async (req, res) => {
       let rojas = 0;
 
       eventos.forEach(evento => {
+
+        // 🟢 Buscar asistencia del jugador dentro del evento
         const reg = evento.asistencia.find(
           a => String(a.jugador) === String(jugador._id)
         );
 
+        // Si no hay registro → ese jugador no fue parte
         if (!reg) return;
 
         totalEventos++;
@@ -271,8 +274,9 @@ exports.rendimientoCategoria = async (req, res) => {
         if (reg.roja) rojas++;
       });
 
+      // 🟡 Asistencia promedio
       const porcentajeAsistencia =
-        totalEventos > 0 ? ((presentes / totalEventos) * 100).toFixed(1) : 0;
+        totalEventos > 0 ? Number(((presentes / totalEventos) * 100).toFixed(1)) : 0;
 
       resultado.push({
         jugador: jugador.nombre,

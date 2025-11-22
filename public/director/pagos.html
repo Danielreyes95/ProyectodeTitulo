@@ -21,13 +21,14 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
     <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
         <h2 class="text-xl font-bold mb-5 text-center">Director</h2>
 
-        <a href="./director.html">Inicio</a>
-        <a href="./jugadores.html">Jugadores</a>
-        <a href="./entrenadores.html">Entrenadores</a>
-        <a href="./categorias.html">Categorías</a>
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
+        <a href="./categorias.html" class="hover:underline">Categorías</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
         <a href="./pagos.html" class="font-bold underline">Pagos</a>
-        <a href="./avisos.html">Avisos</a>
-        <a href="./reportes.html">Reportes</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
 
         <button onclick="logout()" class="bg-red-600 p-2 mt-auto rounded">
             Cerrar sesión
@@ -270,7 +271,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
 </div>
 
 <script src="../js/config.js"></script>
-<script src="/js/pagos.js" defer></script>
+<script src="../js/pagos.js" defer></script>
 
 </body>
 </html>

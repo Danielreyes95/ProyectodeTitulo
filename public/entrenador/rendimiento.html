@@ -26,9 +26,11 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
 
         <a href="./entrenador.html">Inicio</a>
         <a href="./miCategoria.html">Mi Categoría</a>
-        <a href="./asistencia.html">Asistencia</a>
-        <a href="./rendimiento.html" class="font-bold underline">Rendimiento</a>
+        <a href="./asistencia-jugadores.html">Asistencia</a>
+        <a href="./rendimiento.html"class="font-bold underline">Rendimiento</a>
+        <a href="./eventos.html">Eventos</a>
         <a href="./avisos-entrenador.html">Avisos</a>
+        <a href="./reportes-entrenador.html">Reportes</a>
 
         <button onclick="logout()" class="mt-auto bg-red-600 hover:bg-red-700 text-white p-2 rounded">
             Cerrar sesión
@@ -261,7 +263,7 @@ function renderCategoria() {
 
     // Eventos ya traen porcentaje de asistencia (porcentajeAsistencia)
     eventosCategoria.forEach(e => {
-        sumaAsistenciaEventos += e.porcentajeAsistencia || 0;
+        sumaAsistenciaEventos += Number(e.porcentajeAsistencia) || 0;
     });
 
     const asistenciaProm = totalEventos > 0
@@ -428,25 +430,23 @@ async function toggleDetalleJugador(jugadorId) {
                 `;
 
                 registros.forEach(r => {
-                    const fecha = new Date(r.fecha).toLocaleDateString("es-CL");
+                const fecha = new Date(r.fechaEvento).toLocaleDateString("es-CL");
 
-                    html += `
-                        <tr class="border-b">
-                            <td class="p-1">${fecha}</td>
-                            <td class="p-1">${r.tipo}</td>
-                            <td class="p-1 text-center">
-                                ${r.presente ? "🟢" : "🔴"}
-                            </td>
-                            <td class="p-1 text-center">${r.goles || 0}</td>
-                            <td class="p-1 text-center">${r.asistenciasGol || 0}</td>
-                            <td class="p-1 text-center">${r.pasesClave || 0}</td>
-                            <td class="p-1 text-center">${r.recuperaciones || 0}</td>
-                            <td class="p-1 text-center">${r.tirosArco || 0}</td>
-                            <td class="p-1 text-center">${r.amarilla ? "1" : "0"}</td>
-                            <td class="p-1 text-center">${r.roja ? "1" : "0"}</td>
-                        </tr>
-                    `;
-                });
+                html += `
+                    <tr class="border-b">
+                        <td class="p-1">${fecha}</td>
+                        <td class="p-1">${r.tipoEvento}</td>
+                        <td class="p-1 text-center">${r.presente ? "🟢" : "🔴"}</td>
+                        <td class="p-1 text-center">${r.goles || 0}</td>
+                        <td class="p-1 text-center">${r.asistenciasGol || 0}</td>
+                        <td class="p-1 text-center">${r.pasesClave || 0}</td>
+                        <td class="p-1 text-center">${r.recuperaciones || 0}</td>
+                        <td class="p-1 text-center">${r.tirosArco || 0}</td>
+                        <td class="p-1 text-center">${r.amarilla ? "1" : "0"}</td>
+                        <td class="p-1 text-center">${r.roja ? "1" : "0"}</td>
+                    </tr>
+                `;
+            });
 
                 html += "</tbody></table>";
                 cont.innerHTML = html;

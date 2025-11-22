@@ -53,9 +53,9 @@
 
 <script>
 
-const idJugador = localStorage.getItem("pagoJugador");
+const params = new URLSearchParams(window.location.search);
+const idJugador = params.get("jugador");
 
-// Si NO existe el id, redirigir
 if (!idJugador) {
     alert("Jugador no seleccionado");
     window.location.href = "./pagos.html";
@@ -65,7 +65,7 @@ if (!idJugador) {
    FORMATEAR MONTO
 ================================ */
 function formatoCLP(monto) {
-    return monto.toLocaleString("es-CL");
+    return Number(monto).toLocaleString("es-CL");
 }
 
 /* ================================
@@ -86,15 +86,16 @@ async function cargarJugador() {
 ================================ */
 async function cargarHistorial() {
 
-    const res = await fetch(`${BASE_URL}/api/pagos/historial/${idJugador}`);
-    const data = await res.json();
+    const res = await fetch(`${BASE_URL}/api/pagos/jugador/${idJugador}`);
+    const wrapper = await res.json();
+    const data = wrapper.pagos || [];
 
     const tbody = document.getElementById("tbodyHistorial");
     const mensajeVacio = document.getElementById("mensajeVacio");
 
     tbody.innerHTML = "";
 
-    if (data.length === 0) {
+    if (!data.length) {
         mensajeVacio.classList.remove("hidden");
         return;
     }
@@ -118,6 +119,3 @@ cargarJugador();
 cargarHistorial();
 
 </script>
-
-</body>
-</html>

@@ -17,6 +17,7 @@ const asistenciaRoutes = require("./routes/asistencia.routes");
 const directorRoutes = require("./routes/director.routes");
 const pagoRoutes = require("./routes/pago.routes");
 const avisoRoutes = require("./routes/aviso.routes");
+const mpRoutes = require("./routes/mercado-pago.routes");
 
 // =============================
 // CONFIGURACIÓN EXPRESS + HTTP + SOCKET.IO
@@ -53,6 +54,7 @@ app.use("/api/directores", directorRoutes);
 app.use("/api/pagos", pagoRoutes);
 app.use("/api/avisos", avisoRoutes);
 app.use("/api/evento", require("./routes/evento.routes"));
+app.use("/api/mercado-pago", mpRoutes);
 
 // Servir frontend
 app.use(express.static("public"));

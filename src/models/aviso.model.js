@@ -28,6 +28,12 @@ const AvisoSchema = new mongoose.Schema(
       default: null
     },
 
+    categoria: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Categoria",
+      default: null
+    },
+
     creadorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Entrenador",    

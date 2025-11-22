@@ -11,7 +11,7 @@ const EventoSchema = new mongoose.Schema({
   entrenador: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Entrenador",
-    required: true
+    required: null
   },
 
   fechaEvento: {
@@ -24,6 +24,11 @@ const EventoSchema = new mongoose.Schema({
     type: String,
     enum: ["Entrenamiento", "Partido", "Torneo"],
     required: true
+  },
+
+  descripcion: {
+    type: String,
+    default: ""
   },
 
   // 🔥 ASISTENCIA + RENDIMIENTO INTEGRADO

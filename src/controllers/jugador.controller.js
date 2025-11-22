@@ -148,7 +148,7 @@ exports.obtenerJugadores = async (req, res) => {
   try {
     const jugadores = await Jugador.find()
       .populate("categoria", "nombre edadMin edadMax")
-      .populate("apoderado", "nombre rut correo");
+      .populate("apoderado", "nombre rut correo telefono");
 
     return res.json(jugadores);
 

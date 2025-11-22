@@ -19,9 +19,14 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
 
     <!-- SIDEBAR -->
     <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
-        <h2 class="text-xl font-bold text-center mb-5">Director</h2>
-        <a href="./director.html">Inicio</a>
-        <a href="./categorias.html">Categorías</a>
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
+        <a href="./categorias.html" class="font-bold underline">Categorías</a>
+        <a href="./eventos.html" class="underline font-bold">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
         <button onclick="logout()" class="bg-red-600 mt-auto p-2 rounded">Cerrar sesión</button>
     </aside>
 

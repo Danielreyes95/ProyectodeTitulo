@@ -17,11 +17,26 @@ async function registrarApoderado() {
     };
 
     // Validación básica
-    if (!data.rutApoderado || !data.nombreApoderado || !data.telefono || 
+    if (!data.rutApoderado || !data.nombreApoderado || !data.telefono ||
         !data.correo || !data.passwordApoderado ||
         !data.rutJugador || !data.nombreJugador || !data.fechaNacimiento) {
 
         msg.innerText = "Todos los campos son obligatorios.";
+        msg.classList.remove("hidden");
+        return;
+    }
+
+    // Validación muy simple de correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.correo)) {
+        msg.innerText = "Ingresa un correo válido.";
+        msg.classList.remove("hidden");
+        return;
+    }
+
+    // Opcional: forzar mínimo de caracteres en contraseña
+    if (data.passwordApoderado.length < 6) {
+        msg.innerText = "La contraseña debe tener al menos 6 caracteres.";
         msg.classList.remove("hidden");
         return;
     }
@@ -33,7 +48,13 @@ async function registrarApoderado() {
             body: JSON.stringify(data)
         });
 
-        const json = await res.json();
+        // Si el backend devuelve HTML por error (por ejemplo 404), evitamos el JSON parse directo
+        let json;
+        try {
+            json = await res.json();
+        } catch {
+            json = { error: "Respuesta inesperada del servidor." };
+        }
 
         if (!res.ok) {
             msg.innerText = json.error || "Error al registrar la cuenta.";
@@ -41,7 +62,14 @@ async function registrarApoderado() {
             return;
         }
 
-        alert("Cuenta creada correctamente. Ahora puedes iniciar sesión.");
+        // Muestra mensaje + categoría si viene desde el backend
+        const textoCategoria = json.categoriaAsignada
+            ? ` Categoría asignada: ${json.categoriaAsignada}.`
+            : "";
+
+        alert((json.mensaje || "Cuenta creada correctamente.") + textoCategoria);
+
+        // Volver al login
         window.location.href = "index.html";
 
     } catch (error) {

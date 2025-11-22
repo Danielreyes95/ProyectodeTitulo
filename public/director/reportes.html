@@ -26,6 +26,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
         <a href="./jugadores.html" class="hover:underline">Jugadores</a>
         <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
         <a href="./categorias.html" class="hover:underline">Categorías</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
         <a href="./pagos.html" class="hover:underline">Pagos</a>
         <a href="./avisos.html" class="hover:underline">Avisos</a>
         <a href="./reportes.html" class="font-bold underline">Reportes</a>
@@ -58,9 +59,10 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
                 <p id="repPagosDia" class="text-4xl font-bold mt-3 text-gray-800">—</p>
             </div>
 
+            <!-- ASISTENCIA MENSUAL -->
             <div class="bg-white shadow-md rounded-lg p-6 border-l-8 border-purple-600">
-                <h3 class="text-lg font-semibold text-purple-700">Asistencia semanal</h3>
-                <p id="repAsistenciaSemanal" class="text-4xl font-bold mt-3 text-gray-800">—%</p>
+                <h3 class="text-lg font-semibold text-purple-700">Asistencia mensual</h3>
+                <p id="repAsistenciaMensual" class="text-4xl font-bold mt-3 text-gray-800">—%</p>
             </div>
 
         </div>
@@ -134,6 +136,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<script src="/js/config.js"></script>
 <script src="/js/reportes.js" defer></script>
 
 </body>

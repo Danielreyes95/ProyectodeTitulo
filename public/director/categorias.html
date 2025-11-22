@@ -21,13 +21,14 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
     <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
         <h2 class="text-xl font-bold mb-5 text-center">Director</h2>
 
-        <a href="./director.html">Inicio</a>
-        <a href="./jugadores.html">Jugadores</a>
-        <a href="./entrenadores.html">Entrenadores</a>
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
         <a href="./categorias.html" class="font-bold underline">Categorías</a>
-        <a href="./pagos.html">Pagos</a>
-        <a href="./avisos.html">Avisos</a>
-        <a href="./reportes.html">Reportes</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
 
         <button onclick="logout()" class="bg-red-600 p-2 mt-auto rounded">
             Cerrar sesión
@@ -45,7 +46,6 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold">Categorías</h2>
 
-                <!-- ✔ BOTÓN CREAR -->
                 <button onclick="abrirModalCategoria(null)"
                     class="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-800">
                     + Crear
@@ -54,6 +54,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
 
             <ul id="listaCategorias" class="space-y-2"></ul>
         </div>
+
         <!-- PANEL DERECHO -->
         <div class="flex-1 bg-white shadow rounded-lg p-6">
 
@@ -61,7 +62,6 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
                 Selecciona una categoría
             </h2>
 
-            <!-- BOTONES EDITAR / ELIMINAR -->
             <div id="accionesCategoria" class="flex gap-3 mb-6 hidden">
                 <button onclick="abrirModalCategoria(categoriaSeleccionada)"
                     class="bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700">
@@ -74,7 +74,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
                 </button>
             </div>
 
-            <!-- ENTRENADOR ASIGNADO -->
+            <!-- ENTRENADOR -->
             <div id="bloqueEntrenador" class="hidden mb-6">
                 <h3 class="text-xl font-semibold mb-2">Entrenador</h3>
                 <p id="nombreEntrenador"></p>
@@ -215,7 +215,7 @@ function logout() {
 let categoriaSeleccionada = null;
 
 /* =====================================================
-   CARGAR CATEGORÍAS + CONTAR JUGADORES
+   CARGAR CATEGORÍAS
 ===================================================== */
 async function cargarCategorias() {
 
@@ -237,21 +237,29 @@ async function cargarCategorias() {
                     onclick="verCategoria('${c._id}')"
                     class="w-full text-left p-2 bg-gray-100 hover:bg-green-100 rounded categoriaBtn"
                     data-id="${c._id}">
-                    ${c.nombre} · <span class="text-sm text-gray-600">${cantidad} jugadores</span>
+                    ${c.nombre} · 
+                    <span class="text-sm text-gray-600">${cantidad} jugadores</span>
                 </button>
             </li>
         `;
     });
+
+    // **Auto-abrir categoría si venías desde el detalle**
+    const autoOpen = localStorage.getItem("categoriaAutoOpen");
+    if (autoOpen) {
+        verCategoria(autoOpen);
+        localStorage.removeItem("categoriaAutoOpen");
+    }
 }
 
 /* =====================================================
-   VER CATEGORÍA SELECCIONADA
+   VER CATEGORÍA COMPLETA
 ===================================================== */
 async function verCategoria(idCategoria) {
 
     categoriaSeleccionada = idCategoria;
+    localStorage.setItem("categoriaSeleccionada", idCategoria);
 
-    // Resaltar seleccionada
     document.querySelectorAll(".categoriaBtn").forEach(btn => {
         btn.classList.remove("bg-green-200");
         if (btn.dataset.id === idCategoria) {
@@ -265,16 +273,16 @@ async function verCategoria(idCategoria) {
     document.getElementById("tituloCategoria").innerText = categoria.nombre;
     document.getElementById("accionesCategoria").classList.remove("hidden");
 
-    // ENTRENADOR
     if (categoria.entrenador) {
         document.getElementById("bloqueEntrenador").classList.remove("hidden");
-        document.getElementById("nombreEntrenador").innerText = `Nombre: ${categoria.entrenador.nombre}`;
-        document.getElementById("correoEntrenador").innerText = `Correo: ${categoria.entrenador.correo}`;
+        document.getElementById("nombreEntrenador").innerText =
+            `Nombre: ${categoria.entrenador.nombre}`;
+        document.getElementById("correoEntrenador").innerText =
+            `Correo: ${categoria.entrenador.correo}`;
     } else {
         document.getElementById("bloqueEntrenador").classList.add("hidden");
     }
 
-    // LISTAR JUGADORES
     const jugadoresRes = await fetch(`${BASE_URL}/api/jugadores/listar`);
     const jugadores = await jugadoresRes.json();
 
@@ -282,12 +290,23 @@ async function verCategoria(idCategoria) {
     const tbody = document.getElementById("tbodyJugadores");
     tbody.innerHTML = "";
 
+    let porcentajesCat = [];
+
     for (const j of jugadoresCat) {
+
         const edad = calcularEdad(j.fechaNacimiento);
 
-        // Obtener estadísticas del jugador
-        const asRes = await fetch(`${BASE_URL}/api/asistencia/jugador/${j._id}/stats`);
-        const stats = await asRes.json();
+        const eventosRes = await fetch(`${BASE_URL}/api/asistencia/jugador/${j._id}`);
+        const data = await eventosRes.json();
+
+        const registros = Array.isArray(data.registros) ? data.registros : [];
+
+        const total = registros.length;
+        const asistencias = registros.filter(r => r.presente === true).length;
+
+        const porcentaje = total > 0 ? ((asistencias / total) * 100).toFixed(1) : 0;
+
+        porcentajesCat.push(Number(porcentaje));
 
         tbody.innerHTML += `
             <tr class="border-b">
@@ -299,7 +318,7 @@ async function verCategoria(idCategoria) {
                         ${j.estado}
                     </span>
                 </td>
-                <td class="p-2 font-bold">${stats.porcentaje}%</td>
+                <td class="p-2 font-bold">${porcentaje}%</td>
                 <td class="p-2">
                     <button onclick="verDetalleAsistencia('${j._id}')"
                         class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-800">
@@ -310,23 +329,28 @@ async function verCategoria(idCategoria) {
         `;
     }
 
-    // ESTADÍSTICAS DE LA CATEGORÍA
+    /* ================================
+       ESTADÍSTICAS DE LA CATEGORÍA
+    ================================= */
     document.getElementById("bloqueEstadisticas").classList.remove("hidden");
     document.getElementById("bloqueJugadores").classList.remove("hidden");
-
-    const asRes = await fetch(`${BASE_URL}/api/asistencia/categoria/${idCategoria}/stats`);
-    const asData = await asRes.json();
 
     const activos = jugadoresCat.filter(j => j.estado === "activo").length;
     const inactivos = jugadoresCat.filter(j => j.estado === "inactivo").length;
 
     const edades = jugadoresCat.map(j => calcularEdad(j.fechaNacimiento));
-    const edadPromedio = edades.length ? (edades.reduce((a, b) => a + b) / edades.length).toFixed(1) : 0;
+    const edadPromedio = edades.length
+        ? (edades.reduce((a, b) => a + b) / edades.length).toFixed(1)
+        : 0;
+
+    const asistenciaPromedio = porcentajesCat.length
+        ? (porcentajesCat.reduce((a, b) => a + b) / porcentajesCat.length).toFixed(1)
+        : 0;
 
     document.getElementById("statActivos").innerText = activos;
     document.getElementById("statInactivos").innerText = inactivos;
     document.getElementById("statEdadPromedio").innerText = edadPromedio;
-    document.getElementById("statAsistenciaProm").innerText = `${asData.promedioAsistencia ?? 0}%`;
+    document.getElementById("statAsistenciaProm").innerText = `${asistenciaPromedio}%`;
 }
 
 /* =====================================================
@@ -351,17 +375,15 @@ function calcularEdad(fecha) {
 }
 
 /* =====================================================
-   ABRIR MODAL CREAR/EDITAR
+   MODALES
 ===================================================== */
 async function abrirModalCategoria(idCat = null) {
 
     document.getElementById("modalCategoria").classList.remove("hidden");
 
-    // cargar entrenadores
     await cargarEntrenadoresDisponibles();
 
     if (idCat === null) {
-        // CREAR
         document.getElementById("tituloModalCategoria").innerText = "Crear Categoría";
         document.getElementById("categoriaId").value = "";
         document.getElementById("categoriaNombre").value = "";
@@ -369,7 +391,6 @@ async function abrirModalCategoria(idCat = null) {
         document.getElementById("categoriaEdadMax").value = "";
         document.getElementById("categoriaEntrenador").value = "";
     } else {
-        // EDITAR
         await cargarDatosEditar(idCat);
     }
 }
@@ -378,9 +399,6 @@ function cerrarModalCategoria() {
     document.getElementById("modalCategoria").classList.add("hidden");
 }
 
-/* =====================================================
-   CARGAR ENTRENADORES DISPONIBLES
-===================================================== */
 async function cargarEntrenadoresDisponibles() {
     const res = await fetch(`${BASE_URL}/api/categorias/entrenadores/disponibles`);
     const entrenadores = await res.json();
@@ -395,9 +413,6 @@ async function cargarEntrenadoresDisponibles() {
     });
 }
 
-/* =====================================================
-   CARGAR DATOS PARA EDITAR CATEGORÍA
-===================================================== */
 async function cargarDatosEditar(idCat) {
 
     const res = await fetch(`${BASE_URL}/api/categorias/${idCat}`);
@@ -411,9 +426,6 @@ async function cargarDatosEditar(idCat) {
     document.getElementById("categoriaEntrenador").value = c.entrenador?._id ?? "";
 }
 
-/* =====================================================
-   GUARDAR (CREAR O EDITAR)
-===================================================== */
 async function guardarCategoria() {
 
     const id = document.getElementById("categoriaId").value;
@@ -433,7 +445,7 @@ async function guardarCategoria() {
     let method = "POST";
 
     if (id) {
-        url =  `${BASE_URL}/api/categorias/${id}/editar`;
+        url = `${BASE_URL}/api/categorias/${id}/editar`;
         method = "PUT";
     }
 
@@ -455,9 +467,6 @@ async function guardarCategoria() {
     cargarCategorias();
 }
 
-/* =====================================================
-   ABRIR MODAL ELIMINAR
-===================================================== */
 function abrirModalEliminar() {
     document.getElementById("modalEliminar").classList.remove("hidden");
 }
@@ -466,9 +475,6 @@ function cerrarModalEliminar() {
     document.getElementById("modalEliminar").classList.add("hidden");
 }
 
-/* =====================================================
-   CONFIRMAR ELIMINAR
-===================================================== */
 async function confirmarEliminarCategoria() {
 
     if (!categoriaSeleccionada) return;
@@ -488,7 +494,6 @@ async function confirmarEliminarCategoria() {
 
     cerrarModalEliminar();
 
-    // resetear panel
     categoriaSeleccionada = null;
     document.getElementById("tituloCategoria").innerText = "Selecciona una categoría";
     document.getElementById("accionesCategoria").classList.add("hidden");
@@ -500,7 +505,23 @@ async function confirmarEliminarCategoria() {
 }
 
 cargarCategorias();
+window.onload = async () => {
+    await cargarCategorias();
+
+    const autoOpen = localStorage.getItem("categoriaAutoOpen");
+
+    if (autoOpen) {
+        // Esperar un pequeño tiempo para asegurar que los botones estén cargados
+        setTimeout(() => {
+            verCategoria(autoOpen);
+        }, 200);
+        
+        // Limpiar memoria para no abrir siempre la misma categoría
+        localStorage.removeItem("categoriaAutoOpen");
+    }
+};
 </script>
+
 
 </body>
 </html>

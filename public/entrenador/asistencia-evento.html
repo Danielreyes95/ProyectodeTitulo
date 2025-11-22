@@ -292,13 +292,23 @@ async function guardarAsistencia() {
 
     const data = await res.json();
 
-    if (res.ok) {
-        alert("Asistencia guardada correctamente");
-    } else {
-        alert("Error: " + data.error);
+    if (!res.ok) {
+        alert("Error: " + (data.error || "No se pudo guardar"));
+        return;
     }
-}
 
+    // ===============================
+    // ✔ AVISO DE GUARDADO EXITOSO
+    // ===============================
+    alert("Asistencia guardada correctamente. Redirigiendo...");
+
+    // ===============================
+    // ✔ ESPERA 1 SEGUNDO Y REDIRECCIONA
+    // ===============================
+    setTimeout(() => {
+        window.location.href = "./eventos.html";
+    }, 800);
+}
 /* ======================================================
    CERRAR EVENTO
 ====================================================== */

@@ -2,6 +2,7 @@ const Asistencia = require("../models/asistencia.model");
 const Jugador = require("../models/jugador.model");
 const Categoria = require("../models/categoria.model");
 const Entrenador = require("../models/entrenador.model");
+const Evento = require("../models/evento.model");
 
 /* ============================================================
    🟢 Registrar asistencia
@@ -51,18 +52,55 @@ exports.obtenerAsistenciasPorJugador = async (req, res) => {
   try {
     const { jugadorId } = req.params;
 
-    const registros = await Asistencia.find({ jugador: jugadorId })
-      .populate("entrenador", "nombre")
+    // Buscar eventos CERRADOS
+    const eventos = await Evento.find({ cerrado: true })
       .populate("categoria", "nombre")
-      .sort({ fechaEvento: -1 });
+      .populate("entrenador", "nombre correo")
+      .lean();
 
-    res.json({
+    const registros = [];
+
+    eventos.forEach(ev => {
+      ev.asistencia.forEach(a => {
+        if (String(a.jugador) === jugadorId) {
+
+          registros.push({
+            fechaEvento: ev.fechaEvento,
+            tipoEvento: ev.tipoEvento,
+            categoria: ev.categoria,
+            entrenador: ev.entrenador,
+            presente: a.presente,
+            observacion: a.observacion,
+            motivoInasistencia: a.motivoInasistencia,
+
+            // estadísticas individuales
+            goles: a.goles,
+            asistenciasGol: a.asistenciasGol,
+            pasesClave: a.pasesClave,
+            recuperaciones: a.recuperaciones,
+            tirosArco: a.tirosArco,
+            faltasCometidas: a.faltasCometidas,
+            faltasRecibidas: a.faltasRecibidas,
+            amarilla: a.amarilla,
+            roja: a.roja,
+            rendimiento: a.rendimiento
+          });
+
+        }
+      });
+    });
+
+    return res.json({
       mensaje: "Asistencias del jugador obtenidas",
       registros
     });
 
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener asistencias", detalle: error.message });
+    console.error(error);
+    res.status(500).json({
+      error: "Error al obtener asistencias reales del jugador",
+      detalle: error.message
+    });
   }
 };
 

@@ -1,7 +1,7 @@
 // =====================================================
 // CONFIGURACIÓN GENERAL
 // =====================================================
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = `${BASE_URL}/api`;
 
 let cacheCategorias = null;
 
@@ -92,49 +92,70 @@ async function cargarPagosAlDia() {
 }
 
 // =====================================================
-// TARJETA – Asistencia semanal
+// TARJETA – Asistencia Mensual 
 // =====================================================
-async function cargarAsistenciaSemanal() {
-    const el = document.getElementById("repAsistenciaSemanal");
+async function cargarAsistenciaMensual() {
+    const el = document.getElementById("repAsistenciaMensual");
+    if (!el) return;
 
     try {
+        // Cargar categorías si aún no están en memoria
         if (!cacheCategorias) {
             cacheCategorias = await obtenerJSON(`${API_BASE}/categorias`);
         }
 
         const hoy = new Date();
-        const desde = new Date();
-        desde.setDate(hoy.getDate() - 7);
+        const mesActual = hoy.getMonth();
+        const yearActual = hoy.getFullYear();
 
-        let total = 0;
-        let asistio = 0;
+        let sumaPorcentajes = 0;
+        let cantidadEventos = 0;
 
+        // 🔥 Obtener eventos de TODA la escuela (todas las categorías)
         for (const cat of cacheCategorias) {
-            const resp = await obtenerJSON(`${API_BASE}/asistencias/categoria/${cat._id}`);
 
-            const registros = Array.isArray(resp)
-                ? resp
-                : Array.isArray(resp.asistencias)
-                  ? resp.asistencias
-                  : [];
+            let eventos = await obtenerJSON(`${API_BASE}/evento/categoria/${cat._id}`);
 
-            registros.forEach(r => {
-                const f = new Date(r.fechaEvento);
-                if (f >= desde && f <= hoy) {
-                    total++;
-                    if (r.asistencia) asistio++;
+            // 🔥 Filtrar: solo eventos cerrados del mes actual
+            const eventosMes = eventos.filter(ev => {
+                const f = new Date(ev.fechaEvento);
+                return (
+                    ev.cerrado === true &&
+                    f.getMonth() === mesActual &&
+                    f.getFullYear() === yearActual
+                );
+            });
+
+            // 🔥 Calcular porcentaje de cada evento cerrado
+            eventosMes.forEach(ev => {
+                const total = ev.asistencia?.length || 0;
+                const presentes = ev.asistencia?.filter(a => a.presente).length || 0;
+
+                if (total > 0) {
+                    const porc = (presentes * 100) / total;
+                    sumaPorcentajes += porc;
+                    cantidadEventos++;
                 }
             });
         }
 
-        const porcentaje = total > 0 ? Math.round((asistio * 100) / total) : 0;
-        el.textContent = `${porcentaje}%`;
+        // -----------------------------
+        // 🔥 CALCULAR PROMEDIO MENSUAL
+        // -----------------------------
+        let promedio = 0;
+
+        if (cantidadEventos > 0) {
+            promedio = Number((sumaPorcentajes / cantidadEventos).toFixed(1));
+        }
+
+        el.textContent = `${promedio}%`;
 
     } catch (err) {
-        console.error("Error asistencia semanal:", err);
+        console.error("Error asistencia mensual:", err);
         el.textContent = "—%";
     }
 }
+
 
 // =====================================================
 // 🎯 FUNCIÓN PRINCIPAL PARA GENERAR REPORTE
@@ -175,7 +196,7 @@ async function generarReporte() {
 }
 
 // =====================================================
-// REPORTE – OBTENER PAGOS
+// REPORTE – PAGOS
 // =====================================================
 async function obtenerPagosEscuela(categoriaId, mes, anyo) {
     let url = `${API_BASE}/pagos/reportes?`;
@@ -188,9 +209,6 @@ async function obtenerPagosEscuela(categoriaId, mes, anyo) {
     return Array.isArray(resp.detalle) ? resp.detalle : [];
 }
 
-// =====================================================
-// REPORTE – PAGOS
-// =====================================================
 async function generarReportePagos({ mes, anyo, categoriaId, cont }) {
     let pagos = await obtenerPagosEscuela(categoriaId, mes, anyo);
 
@@ -281,10 +299,13 @@ async function generarReporteJugadores({ categoriaId, cont }) {
 // REPORTE – ASISTENCIA POR JUGADOR
 // =====================================================
 async function generarReporteAsistencia({ categoriaId, mes, anyo, cont }) {
-    // 1. Obtener todos los jugadores
+
+    if (!cacheCategorias) {
+        cacheCategorias = await obtenerJSON(`${API_BASE}/categorias`);
+    }
+
     const jugadores = await obtenerJSON(`${API_BASE}/jugadores/listar`);
 
-    // 2. Filtrar por categoría (si corresponde)
     const filtrados = categoriaId
         ? jugadores.filter(j => j.categoria?._id === categoriaId)
         : jugadores;
@@ -294,20 +315,26 @@ async function generarReporteAsistencia({ categoriaId, mes, anyo, cont }) {
         return;
     }
 
-    // 3. Obtener asistencia desde la BD de EVENTOS (rendimientos)
-    const eventos = await obtenerJSON(`${API_BASE}/evento/categoria/${categoriaId || ""}`);
+    let eventos = [];
 
-    // Si no hay eventos registrados
+    if (categoriaId) {
+        eventos = await obtenerJSON(`${API_BASE}/evento/categoria/${categoriaId}`);
+    } else {
+        // traer todos los eventos de todas las categorías
+        for (const cat of cacheCategorias) {
+            const ev = await obtenerJSON(`${API_BASE}/evento/categoria/${cat._id}`);
+            eventos.push(...ev);
+        }
+    }
+
     if (!eventos.length) {
         cont.innerHTML = `<p class="text-gray-500">No existen eventos registrados aún.</p>`;
         return;
     }
 
-    // 4. Crear tabla dinámica
     let filas = "";
 
     for (const j of filtrados) {
-        // Obtener asistencia del jugador en cada evento registrado
         const asistenciaJugador = await obtenerJSON(`${API_BASE}/evento/jugador/${j._id}`);
 
         const totalEventos = asistenciaJugador.length;
@@ -330,10 +357,8 @@ async function generarReporteAsistencia({ categoriaId, mes, anyo, cont }) {
         `;
     }
 
-    // 5. Render final
     cont.innerHTML = `
         <h3 class="text-lg font-bold mb-2">Reporte de Asistencia por Jugador</h3>
-
         <div class="overflow-x-auto max-h-[400px] border rounded bg-white shadow">
             <table class="w-full text-sm">
                 <thead class="bg-gray-100">
@@ -346,23 +371,18 @@ async function generarReporteAsistencia({ categoriaId, mes, anyo, cont }) {
                         <th class="p-2 text-center">% Asistencia</th>
                     </tr>
                 </thead>
-                <tbody>
-                    ${filas}
-                </tbody>
+                <tbody>${filas}</tbody>
             </table>
         </div>
     `;
 }
 
 // =====================================================
-// REPORTE – RENDIMIENTO (Categoría o Toda la escuela)
+// REPORTE – RENDIMIENTO
 // =====================================================
 async function generarReporteRendimiento({ categoriaId, cont }) {
-
-    // 1. Obtener todos los jugadores
     const jugadores = await obtenerJSON(`${API_BASE}/jugadores/listar`);
 
-    // Filtrar por categoría si corresponde
     const filtrados = categoriaId
         ? jugadores.filter(j => j.categoria?._id === categoriaId)
         : jugadores;
@@ -372,8 +392,8 @@ async function generarReporteRendimiento({ categoriaId, cont }) {
         return;
     }
 
-    // 2. Obtener stats de cada jugador
     const resultados = [];
+
     for (const jugador of filtrados) {
         try {
             const stats = await obtenerJSON(`${API_BASE}/evento/jugador/${jugador._id}/stats`);
@@ -397,14 +417,13 @@ async function generarReporteRendimiento({ categoriaId, cont }) {
                 rojas: stats.rojas
             });
 
-        } catch (err) {
-            console.warn("Jugador sin estadísticas:", jugador.nombre);
+        } catch {
+            console.warn("Jugador sin estadísticas");
         }
     }
 
-    // 3. Construir tabla
     if (!resultados.length) {
-        cont.innerHTML = `<p class="text-gray-500">No hay registros de rendimiento para este filtro.</p>`;
+        cont.innerHTML = `<p class="text-gray-500">No hay registros de rendimiento.</p>`;
         return;
     }
 
@@ -428,7 +447,6 @@ async function generarReporteRendimiento({ categoriaId, cont }) {
 
     cont.innerHTML = `
         <h3 class="text-lg font-bold mb-2">Reporte de Rendimiento</h3>
-
         <div class="overflow-x-auto max-h-[350px] border rounded bg-white">
             <table class="w-full text-sm">
                 <thead class="bg-gray-100 sticky top-0">
@@ -454,13 +472,11 @@ async function generarReporteRendimiento({ categoriaId, cont }) {
     `;
 }
 
-
 // =====================================================
 // PDF
 // =====================================================
 async function descargarPDF() {
     const cont = document.getElementById("contenedorReporte");
-
     const { jsPDF } = window.jspdf;
 
     const canvas = await html2canvas(cont);
@@ -482,7 +498,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await cargarTotalJugadores();
     await cargarTotalEntrenadores();
     await cargarPagosAlDia();
-    await cargarAsistenciaSemanal();
+    await cargarAsistenciaMensual(); 
 });
 
 // LOGOUT

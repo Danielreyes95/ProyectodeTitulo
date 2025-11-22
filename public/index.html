@@ -71,7 +71,7 @@
 
     </form>
 
-    <!-- Mensaje antiguo (ya no se usa, pero lo dejamos por compatibilidad) -->
+    <!-- Mensaje antiguo (por compatibilidad) -->
     <div id="msg" class="hidden mt-4 text-red-600 font-semibold text-center"></div>
   </div>
 
@@ -96,12 +96,14 @@
       />
 
       <button 
+        type="button"
         onclick="recuperarPassword()"
         class="bg-amber-600 hover:bg-amber-700 text-white py-2 rounded w-full mt-4 shadow">
         Recuperar
       </button>
 
       <button 
+        type="button"
         onclick="ocultarRecuperar()"
         class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 rounded w-full mt-2 shadow">
         Cancelar
@@ -139,28 +141,41 @@
     function mostrarRecuperar() {
       document.getElementById("modalRecuperar").classList.remove("hidden");
     }
+
     function ocultarRecuperar() {
       document.getElementById("modalRecuperar").classList.add("hidden");
     }
 
     async function recuperarPassword() {
-      const correo = document.getElementById("correoRecuperar").value;
+      const correo = document.getElementById("correoRecuperar").value.trim();
 
-      const res = await fetch(`${BASE_URL}/api/auth/recuperar-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correo })
-      });
-
-      const data = await res.json();
-
-      if (data.error) {
-        mostrarNotificacion(data.error);
+      if (!correo) {
+        mostrarNotificacion("Ingresa tu correo.");
         return;
       }
 
-      mostrarNotificacion("Nueva contraseña temporal enviada.");
-      ocultarRecuperar();
+      try {
+        const res = await fetch(`${BASE_URL}/api/auth/recuperar-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ correo })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+          mostrarNotificacion(data.error || "Error al recuperar la contraseña.");
+          return;
+        }
+
+        // Tu backend actualmente devuelve: { mensaje, nuevaPass }
+        alert(`Tu nueva contraseña temporal es: ${data.nuevaPass}`);
+        ocultarRecuperar();
+
+      } catch (error) {
+        console.error("Error recuperar password:", error);
+        mostrarNotificacion("Error al conectar con el servidor.");
+      }
     }
 
     // =============================

@@ -5,7 +5,12 @@ const eventoController = require("../controllers/evento.controller");
 // Crear evento
 router.post("/crear", eventoController.crearEvento);
 
-// Listar eventos por categoría
+// Listar TODOS los eventos (Director)
+router.get("/todos", eventoController.listarTodosEventos);
+
+router.post("/crear/director", eventoController.crearEventoDirector);
+
+// Listar eventos por categoría (VERSIÓN COMPLETA)
 router.get("/categoria/:categoriaId", eventoController.listarEventosPorCategoria);
 
 // Detalle completo del evento (director)
@@ -29,7 +34,7 @@ router.delete("/:eventoId", eventoController.eliminarEvento);
 // Asistencia detallada por jugador
 router.get("/jugador/:jugadorId", eventoController.asistenciaPorJugador);
 
-// estadísticas jugador
+// Estadísticas jugador
 router.get("/jugador/:jugadorId/stats", eventoController.estadisticasJugador);
 
 module.exports = router;

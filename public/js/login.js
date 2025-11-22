@@ -20,6 +20,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       return;
     }
 
+    // Limpio por si habían datos antiguos
+    localStorage.clear();
+
     // Guardar token y rol
     localStorage.setItem("token", data.token);
     localStorage.setItem("rol", data.rol);
@@ -28,6 +31,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
        🟢 DIRECTOR
     =========================================== */
     if (data.rol === "director") {
+      // (Opcional) guardar datos del director si los necesitas después
+      // localStorage.setItem("idDirector", data.usuario.id);
+      // localStorage.setItem("nombreDirector", data.usuario.nombre);
       window.location.href = "./director/director.html";
       return;
     }
@@ -36,8 +42,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
        🟢 ENTRENADOR
     =========================================== */
     if (data.rol === "entrenador") {
-
       localStorage.setItem("idEntrenador", data.usuario.id);
+      localStorage.setItem("nombreEntrenador", data.usuario.nombre);
+      localStorage.setItem("correoEntrenador", data.usuario.correo || "");
 
       if (data.usuario.categoria) {
         localStorage.setItem("categoria", data.usuario.categoria);
@@ -47,9 +54,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         localStorage.setItem("categoriaNombre", data.usuario.categoriaNombre);
       }
 
-      localStorage.setItem("nombreEntrenador", data.usuario.nombre);
-      localStorage.setItem("correoEntrenador", data.usuario.correo);
-
       window.location.href = "./entrenador/entrenador.html";
       return;
     }
@@ -58,20 +62,29 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
        🟢 APODERADO → PANEL JUGADOR
     =========================================== */
     if (data.rol === "apoderado" && data.panel === "jugador") {
-
       console.log("LOGIN APODERADO DETECTADO → Redirigiendo panel jugador");
 
       // Datos del apoderado
       localStorage.setItem("idApoderado", data.usuario.id);
       localStorage.setItem("nombreApoderado", data.usuario.nombre);
-      localStorage.setItem("correoApoderado", data.usuario.correo);
+      localStorage.setItem("rutApoderado", data.usuario.rut || "");
+      localStorage.setItem("correoApoderado", data.usuario.correo || "");
 
-      // Datos del jugador
-      localStorage.setItem("idJugador", data.jugador._id);
-      localStorage.setItem("nombreJugador", data.jugador.nombre);
-      localStorage.setItem("rutJugador", data.jugador.rut);
-      localStorage.setItem("categoriaJugador", data.jugador.categoria);
-      localStorage.setItem("categoriaNombreJugador", data.jugador.categoriaNombre);
+      // Datos del jugador (hijo)
+      if (data.jugador) {
+        localStorage.setItem("idJugador", data.jugador._id);
+        localStorage.setItem("nombreJugador", data.jugador.nombre);
+        localStorage.setItem("rutJugador", data.jugador.rut || "");
+
+        // 🔥 CLAVE: esto es lo que usa jugador.html
+        if (data.jugador.categoria) {
+          localStorage.setItem("categoriaIdJugador", data.jugador.categoria);
+          localStorage.setItem(
+            "categoriaNombreJugador",
+            data.jugador.categoriaNombre || ""
+          );
+        }
+      }
 
       window.location.href = "./jugador/jugador.html";
       return;

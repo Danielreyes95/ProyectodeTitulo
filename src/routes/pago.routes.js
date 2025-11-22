@@ -32,4 +32,5 @@ router.get("/reportes", pagoController.reportePagos);
 // 🟢 Obtener meses pendientes/pagados del jugador
 router.get("/meses/:jugadorId", pagoController.mesesJugador);
 
+
 module.exports = router;

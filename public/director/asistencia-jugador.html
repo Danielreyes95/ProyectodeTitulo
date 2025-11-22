@@ -21,13 +21,14 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "director"
     <aside class="w-60 bg-green-700 text-white min-h-screen p-4 flex flex-col gap-4">
         <h2 class="text-xl font-bold text-center mb-5">Director</h2>
 
-        <a href="./director.html">Inicio</a>
-        <a href="./jugadores.html">Jugadores</a>
-        <a href="./entrenadores.html">Entrenadores</a>
+        <a href="./director.html" class="hover:underline">Inicio</a>
+        <a href="./jugadores.html" class="hover:underline">Jugadores</a>
+        <a href="./entrenadores.html" class="hover:underline">Entrenadores</a>
         <a href="./categorias.html" class="font-bold underline">Categorías</a>
-        <a href="./pagos.html">Pagos</a>
-        <a href="./avisos.html">Avisos</a>
-        <a href="./reportes.html">Reportes</a>
+        <a href="./eventos.html" class="hover:underline">Eventos</a>
+        <a href="./pagos.html" class="hover:underline">Pagos</a>
+        <a href="./avisos.html" class="hover:underline">Avisos</a>
+        <a href="./reportes.html" class="hover:underline">Reportes</a>
 
         <button onclick="logout()" class="bg-red-600 mt-auto p-2 rounded">Cerrar sesión</button>
     </aside>
@@ -151,47 +152,58 @@ function volverCategoria() {
 ====================================================== */
 async function cargarEstadisticas() {
 
-    const res = await fetch(`${BASE_URL}/api/asistencia/jugador/${idJugador}/stats`);
+    const res = await fetch(`${BASE_URL}/api/asistencia/jugador/${idJugador}`);
     const data = await res.json();
 
-    document.getElementById("statTotal").innerText = data.total;
-    document.getElementById("statAsistencias").innerText = data.asistencias;
-    document.getElementById("statFaltas").innerText = data.faltas;
-    document.getElementById("statPorcentaje").innerText = `${data.porcentaje}%`;
+    const registros = data.registros || [];
+
+    const total = registros.length;
+    const asistencias = registros.filter(r => r.presente === true).length;
+    const faltas = registros.filter(r => r.presente === false).length;
+
+    const porcentaje = total > 0 
+        ? ((asistencias / total) * 100).toFixed(1)
+        : 0;
+
+    document.getElementById("statTotal").innerText = total;
+    document.getElementById("statAsistencias").innerText = asistencias;
+    document.getElementById("statFaltas").innerText = faltas;
+    document.getElementById("statPorcentaje").innerText = `${porcentaje}%`;
 }
 
 /* ======================================================
-   DETALLE POR DÍA
+   DETALLE POR DÍA (NUEVO FORMATO)
 ====================================================== */
 async function cargarDetalle() {
 
-    const res = await fetch(`${BASE_URL}/api/asistencia/jugador/detalle/${idJugador}`);
-    const registros = await res.json();
+    const res = await fetch(`${BASE_URL}/api/asistencia/jugador/${idJugador}`);
+    const data = await res.json();
+
+    const registros = data.registros || [];
 
     const tbody = document.getElementById("tbodyDetalle");
     tbody.innerHTML = "";
 
     registros.forEach(r => {
 
-        const fecha = new Date(r.fechaEvento).toLocaleDateString();
+        const fecha = new Date(r.fechaEvento).toLocaleDateString("es-CL");
 
         tbody.innerHTML += `
             <tr class="border-b">
                 <td class="p-2">${fecha}</td>
 
                 <td class="p-2">
-                    ${r.asistencia
+                    ${r.presente
                         ? "<span class='text-green-600 font-bold'>🟢 Asistió</span>"
                         : "<span class='text-red-600 font-bold'>🔴 No asistió</span>"
                     }
                 </td>
 
-                <td class="p-2">${r.comentario ?? "-"}</td>
+                <td class="p-2">${r.observacion || "-"}</td>
             </tr>
         `;
     });
 }
-
 /* ======================================================
    FUNCIÓN AUXILIAR PARA EDAD
 ====================================================== */

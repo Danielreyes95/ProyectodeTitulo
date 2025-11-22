@@ -38,6 +38,7 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
     ======================================================= -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 z-10">
 
+        <!-- Mi Categoría -->
         <a href="./miCategoria.html"
            class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-green-600
                   hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
@@ -45,36 +46,45 @@ if (!localStorage.getItem("token") || localStorage.getItem("rol") !== "entrenado
             <p class="text-gray-500 text-sm">Jugadores asignados</p>
         </a>
 
-        <a href="./asistencia.html"
+        <!-- Asistencia (NUEVO) -->
+        <a href="./asistencia-jugadores.html"
            class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-blue-600
                   hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
             <p class="text-xl font-bold text-blue-700">Asistencia</p>
-            <p class="text-gray-500 text-sm">Registro diario</p>
+            <p class="text-gray-500 text-sm">Historial por jugador</p>
         </a>
 
-        <a href="./observaciones.html"
-           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-amber-600
+        <!-- Eventos -->
+        <a href="./eventos.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-yellow-500
                   hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
-            <p class="text-xl font-bold text-amber-700">Observaciones</p>
-            <p class="text-gray-500 text-sm">Notas individuales</p>
+            <p class="text-xl font-bold text-yellow-600">Eventos</p>
+            <p class="text-gray-500 text-sm">Programar y registrar asistencia</p>
         </a>
 
-        <a href="./estadisticas.html"
+        <!-- Rendimiento -->
+        <a href="./rendimiento.html"
            class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-purple-600
                   hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
             <p class="text-xl font-bold text-purple-700">Rendimiento</p>
-            <p class="text-gray-500 text-sm">
-                Goles • Asistencias • Tarjetas
-            </p>
+            <p class="text-gray-500 text-sm">Estadísticas generales</p>
         </a>
 
+        <!-- Avisos -->
         <a href="./avisos-entrenador.html"
            class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-red-600
                   hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
             <p class="text-xl font-bold text-red-700">Enviar Avisos</p>
-            <p class="text-gray-500 text-sm">A jugadores de tu categoría</p>
+            <p class="text-gray-500 text-sm">Comunicados a jugadores</p>
         </a>
 
+        <a href="./reportes-entrenador.html"
+           class="bg-white shadow-md rounded-xl p-6 text-center border-l-8 border-teal-600
+                  hover:shadow-lg hover:scale-[1.02] transition cursor-pointer">
+            <p class="text-xl font-bold text-teal-700">Reportes</p>
+            <p class="text-gray-500 text-sm">Listados, asistencia y rendimiento</p>
+        </a>
+        
     </div>
 
     <!-- ======================================================
